@@ -1,31 +1,37 @@
 package com.github.tvbox.osc.dlna;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DLNACastManager implements ServiceConnection {
+public class DLNACastManager {
     private static final DLNACastManager instance = new DLNACastManager();
 
-    public static DLNACastManager getInstance() {
+    public static DLNACastManager get() {
         return instance;
     }
 
-    public void init(Context context) {
+    public void init(Context context) {}
+
+    public void release(Context context) {}
+
+    public void search() {}
+
+    public void setDeviceListener(DeviceListener listener) {}
+
+    public List<CastDevice> getDevices() {
+        return new ArrayList<>();
     }
 
-    public void start() {
+    public void cast(CastDevice device, CastVideo video, CastCallback callback) {}
+
+    public interface DeviceListener {
+        void onDevicesChanged();
+        void onDeviceAdded(CastDevice device);
     }
 
-    public void stop() {
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
+    public interface CastCallback {
+        void onSuccess();
+        void onError(String msg);
     }
 }
