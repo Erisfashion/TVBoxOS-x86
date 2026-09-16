@@ -62,6 +62,9 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
 
+    // DKPlayer UI 资源库（补齐 box_vod_control_view 所需的 dkplayer_* 资源）
+    implementation 'xyz.doikki.videoplayer:videoplayer-ui:3.3.7'
+
     // Room 数据库组件
     implementation 'androidx.room:room-runtime:2.2.5'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
