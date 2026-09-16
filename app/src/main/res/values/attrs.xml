@@ -50,14 +50,16 @@
         <attr name="topDelta" />
     </declare-styleable>
 
-    <!-- 解决 AAPT2 链接报错的 tv_ 属性定义 -->
+    <!-- 解决 AAPT 报错的 tv_ 核心属性定义 -->
     <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
     <attr name="tv_verticalSpacingWithMargins" format="dimension" />
     <attr name="tv_selectedItemIsCentered" format="boolean" />
+    <attr name="tv_layoutManager" format="string" />
 
     <declare-styleable name="TvRecyclerView">
         <attr name="tv_horizontalSpacingWithMargins" />
         <attr name="tv_verticalSpacingWithMargins" />
         <attr name="tv_selectedItemIsCentered" />
+        <attr name="tv_layoutManager" />
     </declare-styleable>
 </resources>
