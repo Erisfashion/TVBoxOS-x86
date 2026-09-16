@@ -62,22 +62,26 @@ dependencies {
     // 4. 注解支持库
     implementation 'org.jetbrains:annotations:19.0.0'
 
-    // 5. 网络请求栈
+    // 5. 内置 HTTP 服务与编码检测库（来自 GitHub 助手分析建议）
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'com.googlecode.universalchardet:universalchardet:1.0.3'
+
+    // 6. 网络请求栈
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
 
-    // 6. x86 解码原生库
+    // 7. x86 解码原生库
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 7. 爬虫解析常规库
+    // 8. 爬虫解析常规库
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation('com.thoughtworks.xstream:xstream:1.4.18') {
         exclude group: 'xmlpull', module: 'xmlpull'
     }
     implementation 'com.google.guava:guava:30.1.1-android'
 
-    // 8. UI 与基础架构库
+    // 9. UI 与基础架构库
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
