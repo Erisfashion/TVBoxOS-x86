@@ -15,16 +15,11 @@ android {
         ndk {
             abiFilters "x86"
         }
-    }
 
-    signingConfigs {
-        release {
-            storeFile file("TVBoxOSC.jks")
-            storePassword "123456"
-            keyAlias "tvbox"
-            keyPassword "123456"
-            v1SigningEnabled true
-            v2SigningEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
         }
     }
 
@@ -32,11 +27,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.release
         }
     }
 
@@ -49,24 +42,46 @@ android {
         pickFirst 'lib/x86/libijkplayer.so'
         pickFirst 'lib/x86/libijkffmpeg.so'
         pickFirst 'lib/x86/libijksdl.so'
+        exclude 'META-INF/beans.xml'
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
+    implementation project(':quickjs')
+    implementation project(':tvrecyclerview')
 
-    // Android 4.2.2 必须的 MultiDex 支持
+    // Android 4.2.2 启动必备分包支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    // UI 基础库兼容
+    // AndroidX UI 基础套件
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
 
-    // 网络与基础工具
+    // Room 数据库组件
+    implementation 'androidx.room:room-runtime:2.2.5'
+    annotationProcessor 'androidx.room:room-compiler:2.2.5'
+
+    // Glide 图片加载
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // 网络与 DNS (3.12.x 是支持 Android 4.x 的最后分支)
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+    implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:3.12.13'
+    implementation 'com.lzy.net:okgo:3.0.4'
+
+    // 常用工具与服务
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.13' // 兼容低版本 Android TLS 协议
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.orhanobut:hawk:2.0.1'
+    implementation 'com.kingja.loadsir:loadsir:1.3.8'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'commons-io:commons-io:2.8.0'
 }
