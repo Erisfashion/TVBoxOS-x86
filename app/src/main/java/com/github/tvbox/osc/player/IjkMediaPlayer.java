@@ -24,17 +24,10 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
 
     private void initPlayer() {
         mMediaPlayer = new tv.danmaku.ijk.media.player.IjkMediaPlayer();
-
-        // 针对 Android 4.2.2 x86 核心优化配置：
-        // 1. 关闭 mediacodec 硬解（老旧 Atom 处理器的硬解驱动极易黑屏闪退）
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 0);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 0);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 0);
-
-        // 2. Android 4.2.2 禁用 OpenSL ES，改用系统原生兼容最好的 AudioTrack 输出
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0);
-
-        // 3. 网络及缓冲降延迟配置
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
@@ -180,9 +173,7 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
     }
 
     @Override
-    public void setWakeMode(Context context, int mode) {
-        // 占位存根实现
-    }
+    public void setWakeMode(Context context, int mode) {}
 
     @Override
     public int getVideoSarNum() {
@@ -194,13 +185,15 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
         return mMediaPlayer != null ? mMediaPlayer.getVideoSarDen() : 1;
     }
 
-    // 提供对内部原生对象的访问，方便高级播放控制
+    @Override
+    public void setKeepInBackground(boolean stayInBackground) {}
+
+    @Override
+    public boolean isPlayable() {
+        return true;
+    }
+
     public tv.danmaku.ijk.media.player.IjkMediaPlayer getInternalMediaPlayer() {
         return mMediaPlayer;
-    }
-    
-    @Override
-    public void setKeepInBackground(boolean stayInBackground) {
-        // 占位存根实现
     }
 }
