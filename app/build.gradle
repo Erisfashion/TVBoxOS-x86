@@ -48,6 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
     implementation project(':quickjs')
+    implementation project(':tvrecyclerview') // 引入本地 TV 列表兼容模块[cite: 15]
 
     // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -58,22 +59,25 @@ dependencies {
     // 3. 现代 TLS 1.2+ 加密引擎
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-    // 4. 网络请求栈
+    // 4. 注解支持库（解决 NotNull 缺失）[cite: 15]
+    implementation 'org.jetbrains:annotations:19.0.0'
+
+    // 5. 网络请求栈
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
 
-    // 5. x86 解码原生库
+    // 6. x86 解码原生库
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 6. 爬虫解析常规库
+    // 7. 爬虫解析常规库
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation('com.thoughtworks.xstream:xstream:1.4.18') {
         exclude group: 'xmlpull', module: 'xmlpull'
     }
     implementation 'com.google.guava:guava:30.1.1-android'
 
-    // 7. UI 与基础架构库（已将 BRVAH 降级为与源码匹配的 2.9.46 版本）
+    // 8. UI 与基础架构库
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
