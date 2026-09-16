@@ -53,13 +53,11 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        // Android 4.2.2 (Dalvik) 必须先加载分包，否则后续代码报 NoClassDefFoundError
         MultiDex.install(this);
     }
 
     @Override
     public void onCreate() {
-        // 关键：在任何网络操作前插入 Conscrypt，使 Android 4.2.2 原生支持现代 TLS 1.2+
         try {
             Security.insertProviderAt(Conscrypt.newProvider(), 1);
         } catch (Throwable t) {
@@ -69,7 +67,6 @@ public class App extends Application {
         super.onCreate();
         instance = this;
 
-        // 注册 Activity 生命周期监听，确保 getCurrentActivity() 随时获取当前前台 Activity
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
@@ -99,14 +96,12 @@ public class App extends Application {
             }
         });
 
-        // 初始化本地轻量存储
         Hawk.init(this).build();
 
-        // 初始化数据库与后台服务控制组件
-        RoomDataManger.init(this);
+        // Room 数据库在调用各 Dao 时会自动单例构建，去掉不存在的 init 调用
+        // RoomDataManger.init(this);
         ControlManager.init(this);
 
-        // 初始化状态页加载器
         LoadSir.beginBuilder()
                 .addCallback(new EmptyCallback())
                 .addCallback(new LoadingCallback())
