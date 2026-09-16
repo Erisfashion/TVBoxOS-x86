@@ -36,19 +36,19 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // 1. ijkplayer 基础与 x86 SO 动态库
-    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
-    implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    // ijkplayer 原生库
+    api 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    api 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 2. 补齐 dkplayer UI 资源库（解决所有 dkplayer_ 资源找不到报错）
+    // dkplayer UI 库
     implementation 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'
 
-    // 3. ExoPlayer 2.18.7 全套（追加 exoplayer-ui 解决 exo_icon_play 等资源缺失报错）
+    // 关键：将 ExoPlayer 改为 api 导出，让 app 模块能正常继承和访问 Player 接口
     def exo_version = '2.18.7'
-    implementation "com.google.android.exoplayer:exoplayer-core:${exo_version}"
-    implementation "com.google.android.exoplayer:exoplayer-ui:${exo_version}"
-    implementation "com.google.android.exoplayer:exoplayer-dash:${exo_version}"
-    implementation "com.google.android.exoplayer:exoplayer-hls:${exo_version}"
-    implementation "com.google.android.exoplayer:exoplayer-rtsp:${exo_version}"
-    implementation "com.google.android.exoplayer:extension-rtmp:${exo_version}"
+    api "com.google.android.exoplayer:exoplayer-core:${exo_version}"
+    api "com.google.android.exoplayer:exoplayer-ui:${exo_version}"
+    api "com.google.android.exoplayer:exoplayer-dash:${exo_version}"
+    api "com.google.android.exoplayer:exoplayer-hls:${exo_version}"
+    api "com.google.android.exoplayer:exoplayer-rtsp:${exo_version}"
+    api "com.google.android.exoplayer:extension-rtmp:${exo_version}"
 }
