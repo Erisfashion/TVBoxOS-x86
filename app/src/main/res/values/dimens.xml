@@ -100,4 +100,10 @@
     <drawable name="dkplayer_selector_play_button">@drawable/icon_play</drawable>
     <drawable name="dkplayer_layer_progress_bar">@android:drawable/progress_horizontal</drawable>
     <drawable name="dkplayer_seekbar_thumb">@drawable/seekbar_thumb_normal</drawable>
+    <!-- 补充播放器预览与全局缺少的尺寸定义 -->
+    <dimen name="preview_player_radius">4dp</dimen>
+    <dimen name="ts_18">18sp</dimen>
+    <dimen name="ts_19">19sp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="sp_14">14sp</dimen>
 </resources>
