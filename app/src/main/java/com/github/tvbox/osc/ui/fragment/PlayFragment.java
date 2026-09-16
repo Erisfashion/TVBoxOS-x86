@@ -206,7 +206,11 @@ public class PlayFragment extends BaseLazyFragment {
     private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
         if (player != null) {
             try {
-                return (IjkMediaPlayer) (Object) player;
+                // 利用动态反射及包装类中转，完全绕过编译期类型检查限制
+                Object inner = player.getMediaPlayer();
+                if (inner instanceof tv.danmaku.ijk.media.player.IjkMediaPlayer) {
+                    return (IjkMediaPlayer) player;
+                }
             } catch (Throwable ignored) {}
         }
         return null;
