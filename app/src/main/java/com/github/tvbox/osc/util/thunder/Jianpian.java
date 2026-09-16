@@ -1,8 +1,19 @@
 package com.github.tvbox.osc.util.thunder;
 
 public class Jianpian {
+
+    public static boolean isJpUrl(String url) {
+        return false;
+    }
+
+    public static String JPUrlDec(String url) {
+        return url != null ? url : "";
+    }
+
+    public static void finish() {
+    }
+
     public static void start(String url) {
-        // x86 与 Android 4.2.2 架构下停用该组件，直接置空
     }
 
     public static void play(String url) {
