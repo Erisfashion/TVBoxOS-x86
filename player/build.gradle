@@ -1,8 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 17
@@ -26,12 +25,12 @@ dependencies {
     // OkHttp 网络依赖
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // x86 原生解码支持 (仅在运行时注入动态库，避免与自带源码产生类冲突)
+    // x86 原生解码支持 (仅在运行时打包动态库)
     runtimeOnly('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
         exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
     }
 
-    // ExoPlayer 2.18.7 完整套件 (原生支持 API 16+，包含 core、hls、rtsp、dash 等全部对应接口)
+    // ExoPlayer 2.18.7 完整套件
     api 'com.google.android.exoplayer:exoplayer:2.18.7'
     api 'com.google.android.exoplayer:extension-rtmp:2.18.7'
 }
