@@ -62,9 +62,9 @@ dependencies {
     // 4. 注解支持库
     implementation 'org.jetbrains:annotations:19.0.0'
 
-    // 5. 内置 HTTP 服务与正确的编码检测库包名
+    // 5. 内置 HTTP 服务与现代稳定的字符编码检测库
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+    implementation 'com.github.albfernandez:juniversalchardet:2.5.0'
 
     // 6. 网络请求栈
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
