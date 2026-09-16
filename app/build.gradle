@@ -51,6 +51,9 @@ dependencies {
     implementation project(':quickjs')
     implementation project(':tvrecyclerview')
 
+    // 解决 package org.jetbrains.annotations does not exist
+    implementation 'org.jetbrains:annotations:13.0'
+
     // Android 4.2.2 启动必备分包支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -64,7 +67,7 @@ dependencies {
     // 屏幕适配库 (提供 AutoSizeUtils)
     implementation 'me.jessyan:autosize:1.2.1'
 
-    // 核心列表适配器库 (必须为 2.x 版本，匹配源码中的 BaseViewHolder)
+    // 核心列表适配器库 (2.x 版本，匹配 BaseViewHolder)
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
     // Room 数据库组件
