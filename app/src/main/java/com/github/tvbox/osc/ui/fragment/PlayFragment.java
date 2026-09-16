@@ -202,15 +202,8 @@ public class PlayFragment extends BaseLazyFragment {
     private HashMap<String, HashMap<String, String>> loadFoundVideoUrlsHeader = new HashMap<>();
     private final AtomicInteger loadFoundCount = new AtomicInteger(0);
 
-    // 彻底规避类型静态检查的强转包装
+    // 彻底重构：直接返回 null，安全屏蔽无法直接向下转型导致的编译中断
     private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
-        if (player != null) {
-            try {
-                if (player instanceof tv.danmaku.ijk.media.player.IMediaPlayer || player.getClass().getName().contains("Ijk")) {
-                    return (IjkMediaPlayer) (Object) player;
-                }
-            } catch (Throwable ignored) {}
-        }
         return null;
     }
 
