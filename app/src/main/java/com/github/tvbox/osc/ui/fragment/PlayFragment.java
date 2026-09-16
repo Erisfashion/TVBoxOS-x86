@@ -55,7 +55,6 @@ import com.github.tvbox.osc.cache.CacheManager;
 import com.github.tvbox.osc.dlna.CastVideo;
 import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.player.ExoPlayer;
-import com.github.tvbox.osc.player.IjkMediaPlayer;
 import com.github.tvbox.osc.player.MyVideoView;
 import com.github.tvbox.osc.player.MusicPlaybackService;
 import com.github.tvbox.osc.player.TrackInfo;
@@ -131,7 +130,6 @@ import me.jessyan.autosize.AutoSize;
 import master.flame.danmaku.ui.widget.DanmakuView;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
-import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.ProgressManager;
 import xyz.doikki.videoplayer.player.VideoView;
@@ -202,14 +200,6 @@ public class PlayFragment extends BaseLazyFragment {
     private LinkedList<String> loadFoundVideoUrls = new LinkedList<>();
     private HashMap<String, HashMap<String, String>> loadFoundVideoUrlsHeader = new HashMap<>();
     private final AtomicInteger loadFoundCount = new AtomicInteger(0);
-
-    // 安全获取项目中实现的 IjkMediaPlayer 包装类
-    private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
-        if (player instanceof IjkMediaPlayer) {
-            return (IjkMediaPlayer) player;
-        }
-        return null;
-    }
 
     @Override
     protected int getLayoutResID() {
@@ -689,11 +679,8 @@ public class PlayFragment extends BaseLazyFragment {
 
     void selectMyAudioTrack() {
         AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
-        IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
-        if (ijkPlayer != null) {
-            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
-        } else if (mediaPlayer instanceof ExoPlayer) {
+        if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
         if (trackInfo == null) {
@@ -713,12 +700,11 @@ public class PlayFragment extends BaseLazyFragment {
                     }
                     mediaPlayer.pause();
                     long progress = mediaPlayer.getCurrentPosition();
-                    if (ijkPlayer != null) ijkPlayer.setTrack(value.trackId, "");
                     if (mediaPlayer instanceof ExoPlayer) ((ExoPlayer) mediaPlayer).setTrack(value, progressKey);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (ijkPlayer != null) mediaPlayer.seekTo(progress);
+                            mediaPlayer.seekTo(progress);
                             mediaPlayer.start();
                         }
                     }, 200);
@@ -748,11 +734,8 @@ public class PlayFragment extends BaseLazyFragment {
 
     void selectMyVideoTrack() {
         AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
-        IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
-        if (ijkPlayer != null) {
-            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
-        } else if (mediaPlayer instanceof ExoPlayer) {
+        if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
         if (trackInfo == null || trackInfo.getVideo().isEmpty()) {
@@ -771,9 +754,7 @@ public class PlayFragment extends BaseLazyFragment {
                     }
                     mediaPlayer.pause();
                     long progress = mediaPlayer.getCurrentPosition();
-                    if (ijkPlayer != null) {
-                        ijkPlayer.setTrack(value.trackId, "");
-                    } else if (mediaPlayer instanceof ExoPlayer) {
+                    if (mediaPlayer instanceof ExoPlayer) {
                         ((ExoPlayer) mediaPlayer).setTrack(value, "");
                     }
                     new Handler().postDelayed(new Runnable() {
@@ -809,11 +790,8 @@ public class PlayFragment extends BaseLazyFragment {
 
     void selectMyInternalSubtitle() {
         AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
-        IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
-        if (ijkPlayer != null) {
-            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
-        } else if (mediaPlayer instanceof ExoPlayer) {
+        if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
         if (trackInfo == null) {
@@ -831,21 +809,7 @@ public class PlayFragment extends BaseLazyFragment {
                     for (TrackInfoBean subtitle : bean) {
                         subtitle.selected = isSameTrack(subtitle, value);
                     }
-                    if (ijkPlayer != null) {
-                        mediaPlayer.pause();
-                        long progress = mediaPlayer.getCurrentPosition();
-                        mController.mSubtitleView.destroy();
-                        mController.mSubtitleView.clearSubtitleCache();
-                        mController.mSubtitleView.isInternal = true;
-                        ijkPlayer.setTrack(value.trackId, "");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mediaPlayer.seekTo(progress);
-                                mediaPlayer.start();
-                            }
-                        }, 800);
-                    } else if (mediaPlayer instanceof ExoPlayer) {
+                    if (mediaPlayer instanceof ExoPlayer) {
                         mController.mSubtitleView.setVisibility(View.GONE);
                         mController.mSubtitleView.destroy();
                         mController.mSubtitleView.clearSubtitleCache();
@@ -1100,7 +1064,6 @@ public class PlayFragment extends BaseLazyFragment {
     private void initSubtitleView() {
         TrackInfo trackInfo = null;
         AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
-        IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         mController.mLyricView.setTextSize(previewMode ? 16 : 24);
         mController.mLyricView.setVisibility(View.GONE);
         mController.mLyricView.reset();
@@ -1111,24 +1074,7 @@ public class PlayFragment extends BaseLazyFragment {
         mController.mSubtitleView.hasInternal = false;
         mController.mSubtitleView.isInternal = false;
         hideExoInternalSubtitle();
-        if (ijkPlayer != null) {
-            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
-            if (trackInfo != null && trackInfo.getSubtitle().size() > 0) {
-                mController.mSubtitleView.hasInternal = true;
-            }
-            ijkPlayer.loadDefaultTrack(progressKey);
-            ijkPlayer.setOnTimedTextListener(new IMediaPlayer.OnTimedTextListener() {
-                @Override
-                public void onTimedText(IMediaPlayer mp, IjkTimedText text) {
-                    if (text == null) return;
-                    if (mController.mSubtitleView.isInternal) {
-                        com.github.tvbox.osc.subtitle.model.Subtitle subtitle = new com.github.tvbox.osc.subtitle.model.Subtitle();
-                        subtitle.content = text.getText();
-                        mController.mSubtitleView.onSubtitleChanged(subtitle);
-                    }
-                }
-            });
-        }
+        
         if (mediaPlayer instanceof ExoPlayer) {
             ExoPlayer exoPlayer = (ExoPlayer) mediaPlayer;
             trackInfo = exoPlayer.getTrackInfo();
@@ -1161,32 +1107,6 @@ public class PlayFragment extends BaseLazyFragment {
             if (playSubtitle != null && playSubtitle.length() > 0) {
                 hideExoInternalSubtitle();
                 mController.mSubtitleView.setSubtitlePath(playSubtitle);
-            } else {
-                if (mController.mSubtitleView.hasInternal) {
-                    if (mediaPlayer instanceof ExoPlayer) {
-                        ((ExoPlayer) mediaPlayer).setInternalSubtitleDelay(SubtitleHelper.getTimeDelay());
-                        exoInternalSubtitle = true;
-                        mController.mExoSubtitleView.setVisibility(View.VISIBLE);
-                        applyExoSubtitleSettings();
-                    } else if (ijkPlayer != null && trackInfo != null && trackInfo.getSubtitle().size() > 0) {
-                        mController.mSubtitleView.isInternal = true;
-                        List<TrackInfoBean> subtitleTrackList = trackInfo.getSubtitle();
-                        int selectedIndex = trackInfo.getSubtitleSelected(true);
-                        boolean hasMandarin = false;
-                        for (TrackInfoBean subtitleTrackInfoBean : subtitleTrackList) {
-                            if ("国语".equals(subtitleTrackInfoBean.language)) {
-                                hasMandarin = true;
-                                if (selectedIndex != subtitleTrackInfoBean.trackId) {
-                                    ijkPlayer.setTrack(subtitleTrackInfoBean.trackId, "");
-                                    break;
-                                }
-                            }
-                        }
-                        if (!hasMandarin) {
-                            ijkPlayer.setTrack(subtitleTrackList.get(0).trackId, "");
-                        }
-                    }
-                }
             }
         }
     }
@@ -1461,11 +1381,8 @@ public class PlayFragment extends BaseLazyFragment {
         if (mVideoView == null) return null;
         try {
             AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
-            IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
             TrackInfo trackInfo = null;
-            if (ijkPlayer != null) {
-                trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
-            } else if (mediaPlayer instanceof ExoPlayer) {
+            if (mediaPlayer instanceof ExoPlayer) {
                 trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
             }
             if (trackInfo == null) return null;
