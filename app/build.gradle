@@ -1,108 +1,72 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.github.tvbox.osc"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.0-x86-tablet"
-
+        versionCode 100
+        versionName "1.0.0-x86-jb"
         multiDexEnabled true
 
         ndk {
-            abiFilters 'x86'
+            abiFilters "x86"
         }
+    }
 
-        vectorDrawables.useSupportLibrary = true
+    signingConfigs {
+        release {
+            storeFile file("TVBoxOSC.jks")
+            storePassword "123456"
+            keyAlias "tvbox"
+            keyPassword "123456"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.release
         }
     }
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+        pickFirst 'lib/x86/libijkplayer.so'
+        pickFirst 'lib/x86/libijkffmpeg.so'
+        pickFirst 'lib/x86/libijksdl.so'
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
-    implementation project(':quickjs')
-    implementation project(':tvrecyclerview')
 
-    // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
+    // Android 4.2.2 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    // 2. Java 8 核心语法脱糖支持
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-
-    // 3. 现代 TLS 1.2+ 加密引擎
-    implementation 'org.conscrypt:conscrypt-android:2.5.2'
-
-    // 4. 注解支持库与 IO 工具库（解决 SubtitleLoader 缺失的 ReaderInputStream）
-    implementation 'org.jetbrains:annotations:19.0.0'
-    implementation 'commons-io:commons-io:2.11.0'
-
-    // 5. 内置 HTTP 服务与字符编码检测库
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'com.github.albfernandez:juniversalchardet:2.5.0'
-
-    // 6. 开源库（权限请求与弹幕引擎）
-    implementation 'com.github.getActivity:XXPermissions:13.6'
-    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
-    implementation 'com.github.ctiao:ndkbitmap-x86:0.9.21'
-
-    // 7. 网络请求栈
-    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'com.lzy.net:okgo:3.0.4'
-
-    // 8. x86 解码原生库
-    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
-    implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
-
-    // 9. 爬虫解析常规库
-    implementation 'org.jsoup:jsoup:1.14.3'
-    implementation('com.thoughtworks.xstream:xstream:1.4.18') {
-        exclude group: 'xmlpull', module: 'xmlpull'
-    }
-    implementation 'com.google.guava:guava:30.1.1-android'
-
-    // 10. UI 与基础架构库
+    // UI 基础库兼容
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.room:room-runtime:2.2.6'
-    annotationProcessor 'androidx.room:room-compiler:2.2.6'
-    implementation 'com.orhanobut:hawk:2.0.1'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
+
+    // 网络与基础工具
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'com.kingja.loadsir:loadsir:1.3.8'
-    implementation 'com.google.zxing:core:3.3.3'
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'me.jessyan:autosize:1.2.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13' // 兼容低版本 Android TLS 协议
 }
