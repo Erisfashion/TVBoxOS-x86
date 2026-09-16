@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.github.tvbox.osc"
@@ -52,7 +51,7 @@ dependencies {
     implementation project(':quickjs')
     implementation project(':tvrecyclerview')
 
-    // Android 4.2.2 必备分包支持
+    // Android 4.2.2 启动必备分包支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // AndroidX UI 基础套件
