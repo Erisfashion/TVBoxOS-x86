@@ -131,6 +131,7 @@ import me.jessyan.autosize.AutoSize;
 import master.flame.danmaku.ui.widget.DanmakuView;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
+import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.ProgressManager;
 import xyz.doikki.videoplayer.player.VideoView;
@@ -142,7 +143,6 @@ public class PlayFragment extends BaseLazyFragment {
     private static final long RESOLVE_PLAY_URL_TIMEOUT_MS = 15 * 1000L;
     private static final long SWITCH_LINE_PLAY_TIMEOUT_MS = 20 * 1000L;
 
-    // 核心播放变量集中声明
     public VodInfo mVodInfo;
     public JSONObject mVodPlayerCfg;
     public String sourceKey;
@@ -203,7 +203,7 @@ public class PlayFragment extends BaseLazyFragment {
     private HashMap<String, HashMap<String, String>> loadFoundVideoUrlsHeader = new HashMap<>();
     private final AtomicInteger loadFoundCount = new AtomicInteger(0);
 
-    // 安全获取项目中实现的 IjkMediaPlayer
+    // 安全获取项目中实现的 IjkMediaPlayer 包装类
     private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
         if (player instanceof IjkMediaPlayer) {
             return (IjkMediaPlayer) player;
@@ -518,7 +518,7 @@ public class PlayFragment extends BaseLazyFragment {
 
     private void showCastDialog() {
         if (TextUtils.isEmpty(webPlayUrl)) {
-            Toast.makeText(mContext, "暂无可投屏播放地址", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "无可投屏播放地址", Toast.LENGTH_SHORT).show();
             return;
         }
         HashMap<String, String> headers = webHeaderMap == null ? null : new HashMap<>(webHeaderMap);
@@ -692,7 +692,7 @@ public class PlayFragment extends BaseLazyFragment {
         IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
         if (ijkPlayer != null) {
-            trackInfo = ijkPlayer.getTrackInfo();
+            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
         } else if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
@@ -713,7 +713,7 @@ public class PlayFragment extends BaseLazyFragment {
                     }
                     mediaPlayer.pause();
                     long progress = mediaPlayer.getCurrentPosition();
-                    if (ijkPlayer != null) ijkPlayer.setTrack(value.trackId, progressKey);
+                    if (ijkPlayer != null) ijkPlayer.setTrack(value.trackId, "");
                     if (mediaPlayer instanceof ExoPlayer) ((ExoPlayer) mediaPlayer).setTrack(value, progressKey);
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -751,7 +751,7 @@ public class PlayFragment extends BaseLazyFragment {
         IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
         if (ijkPlayer != null) {
-            trackInfo = ijkPlayer.getTrackInfo();
+            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
         } else if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
@@ -812,7 +812,7 @@ public class PlayFragment extends BaseLazyFragment {
         IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
         TrackInfo trackInfo = null;
         if (ijkPlayer != null) {
-            trackInfo = ijkPlayer.getTrackInfo();
+            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
         } else if (mediaPlayer instanceof ExoPlayer) {
             trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
         }
@@ -1112,7 +1112,7 @@ public class PlayFragment extends BaseLazyFragment {
         mController.mSubtitleView.isInternal = false;
         hideExoInternalSubtitle();
         if (ijkPlayer != null) {
-            trackInfo = ijkPlayer.getTrackInfo();
+            trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
             if (trackInfo != null && trackInfo.getSubtitle().size() > 0) {
                 mController.mSubtitleView.hasInternal = true;
             }
@@ -1464,7 +1464,7 @@ public class PlayFragment extends BaseLazyFragment {
             IjkMediaPlayer ijkPlayer = getAsIjk(mediaPlayer);
             TrackInfo trackInfo = null;
             if (ijkPlayer != null) {
-                trackInfo = ijkPlayer.getTrackInfo();
+                trackInfo = new TrackInfo(ijkPlayer.getTrackInfo());
             } else if (mediaPlayer instanceof ExoPlayer) {
                 trackInfo = ((ExoPlayer) mediaPlayer).getTrackInfo();
             }
