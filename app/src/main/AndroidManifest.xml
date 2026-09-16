@@ -5,7 +5,7 @@
 
     <!-- 强制忽略 Crosswalk(API 19) 以及其他所有子库的最低版本限制 -->
     <uses-sdk
-        tools:overrideLibrary="org.xwalk.core, com.google.android.exoplayer2, com.whl.quickjs.android, androidx.room, okhttp3, com.kingja.loadsir, com.orhanobut.hawk, xyz.doikki.videoplayer, tv.danmaku.ijk.media" />
+        tools:overrideLibrary="org.xwalk.core, com.google.android.exoplayer2, com.whl.quickjs.android, androidx.room, okhttp3, com.kingja.loadsir, com.orhanobut.hawk, xyz.doikki.videoplayer, tv.danmaku.ijk.media, com.hjq.permissions" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
