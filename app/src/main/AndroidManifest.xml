@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.tvbox.osc">
 
-    <uses-sdk tools:overrideLibrary="androidx.leanback, com.github.tvbox.osc, tv.danmaku.ijk.media.player, xyz.doikki.videoplayer.exo, androidx.room, com.google.android.exoplayer2, com.google.android.exoplayer2.ext.rtmp, com.google.android.exoplayer2.source.rtsp, com.google.android.exoplayer2.source.dash, com.owen.tv_recyclerview, com.whl.quickjs.android" />
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="28"
+        tools:overrideLibrary="com.google.android.exoplayer2, androidx.room, okhttp3" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,15 +15,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
-    <uses-feature
-        android:name="android.software.leanback"
-        android:required="false" />
-
     <application
-        android:name=".base.App"
+        android:name="com.github.tvbox.osc.base.App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/app_icon"
@@ -28,14 +24,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="jelly_bean_mr1">
 
         <activity
-            android:name=".ui.activity.HomeActivity"
+            android:name="com.github.tvbox.osc.ui.activity.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,54 +39,23 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.DetailActivity"
+            android:name="com.github.tvbox.osc.ui.activity.DetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
         <activity
-            android:name=".ui.activity.LivePlayActivity"
+            android:name="com.github.tvbox.osc.ui.activity.LivePlayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
         <activity
-            android:name=".ui.activity.SearchActivity"
+            android:name="com.github.tvbox.osc.ui.activity.FastSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
         <activity
-            android:name=".ui.activity.FastSearchActivity"
+            android:name="com.github.tvbox.osc.ui.activity.SettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
-
-        <activity
-            android:name=".ui.activity.SettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
-
-        <activity
-            android:name=".ui.activity.HistoryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
-
-        <activity
-            android:name=".ui.activity.CollectActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
-
-        <activity
-            android:name=".ui.activity.PushActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
-
-        <activity
-            android:name=".ui.activity.LocalFileActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensorLandscape" />
-
-        <service
-            android:name=".server.RemoteServer"
-            android:exported="false" />
-
     </application>
-
 </manifest>
