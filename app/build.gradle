@@ -48,26 +48,31 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
 
-    // Android 4.2.2 (Dalvik) 突破 64K 方法限制
+    // 1. Android 4.2.2 (Dalvik) 突破 64K 方法限制
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    // Java 8 核心语法脱糖支持
+    // 2. Java 8 核心语法脱糖支持
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
-    // 现代 TLS 1.2+ 加密引擎
+    // 3. 现代 TLS 1.2+ 加密引擎
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-    // 网络请求栈锁定在支持 API 17 的最高版
+    // 4. 网络请求栈锁定在支持 API 17 的版本
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+    implementation 'com.lzy.net:okgo:3.0.4'
 
-    // x86 原生库解析
+    // 5. x86 解码原生库
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // UI 与基础架构库
+    // 6. 核心 TV 列表库（自带 tv_horizontalSpacingWithMargins 等全部属性）
+    implementation 'com.owen:tv-recyclerview:1.6.0'
+
+    // 7. UI 与基础架构库
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.room:room-runtime:2.2.6'
     annotationProcessor 'androidx.room:room-compiler:2.2.6'
@@ -75,10 +80,10 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.kingja.loadsir:loadsir:1.3.8'
+    implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'me.jessyan:autosize:1.2.1'
-    // 确保包含 tv-recyclerview 支持库
-    implementation 'com.github.owen:tv-recyclerview:1.6.0'
 }
