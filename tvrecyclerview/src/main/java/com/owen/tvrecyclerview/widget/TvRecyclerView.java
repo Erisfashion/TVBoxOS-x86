@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TvRecyclerView extends RecyclerView {
+
+    // 补充暴露的间距字段，供 UserFragment 等页面直接读取
+    public int mHorizontalSpacingWithMargins = 0;
+    public int mVerticalSpacingWithMargins = 0;
     
     public TvRecyclerView(Context context) { 
         super(context); 
@@ -65,7 +69,10 @@ public class TvRecyclerView extends RecyclerView {
     }
 
     // 5. 补全间距与状态滚动判断方法
-    public void setSpacingWithMargins(int verticalSpacing, int horizontalSpacing) {}
+    public void setSpacingWithMargins(int verticalSpacing, int horizontalSpacing) {
+        this.mVerticalSpacingWithMargins = verticalSpacing;
+        this.mHorizontalSpacingWithMargins = horizontalSpacing;
+    }
 
     public boolean isScrolling() {
         return getScrollState() != SCROLL_STATE_IDLE;
