@@ -202,9 +202,12 @@ public class PlayFragment extends BaseLazyFragment {
     private HashMap<String, HashMap<String, String>> loadFoundVideoUrlsHeader = new HashMap<>();
     private final AtomicInteger loadFoundCount = new AtomicInteger(0);
 
+    // 安全获取项目中实现的 IjkMediaPlayer 包装类（通过 Object 中转避开编译期不兼容判定）
     private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
-        if (player instanceof IjkMediaPlayer) {
-            return (IjkMediaPlayer) player;
+        if (player != null && player.getClass().getName().contains("Ijk")) {
+            try {
+                return (IjkMediaPlayer) (Object) player;
+            } catch (Throwable ignored) {}
         }
         return null;
     }
