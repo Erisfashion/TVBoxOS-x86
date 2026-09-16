@@ -44,24 +44,28 @@ public class CastDeviceDialog extends BaseDialog {
     @Override
     protected void init() {
         mRecyclerView = findViewById(R.id.recyclerView);
-        if (mRecyclerView != null) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mAdapter = new CastDeviceAdapter(mDevices);
-            mRecyclerView.setAdapter(mAdapter);
-
-            mAdapter.setOnItemClickListener(position -> {
-                if (position >= 0 && position < mDevices.size()) {
-                    CastDevice device = mDevices.get(position);
-                    if (mCastListener != null) {
-                        mCastListener.onCast(device);
-                        mCastListener.onItemClick(device);
-                        mCastListener.onSelected(device);
-                    }
-                    castVideo(device);
-                    dismiss();
-                }
-            });
+        if (mRecyclerView == null) {
+            // 如果 XML 中没有定义，则通过代码动态创建，防止找不到 ID 报错
+            mRecyclerView = new RecyclerView(getContext());
+            setContentView(mRecyclerView);
         }
+        
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new CastDeviceAdapter(mDevices);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(position -> {
+            if (position >= 0 && position < mDevices.size()) {
+                CastDevice device = mDevices.get(position);
+                if (mCastListener != null) {
+                    mCastListener.onCast(device);
+                    mCastListener.onItemClick(device);
+                    mCastListener.onSelected(device);
+                }
+                castVideo(device);
+                dismiss();
+            }
+        });
 
         searchDevices();
     }
@@ -69,18 +73,11 @@ public class CastDeviceDialog extends BaseDialog {
     private void searchDevices() {
         DLNACastManager.get().setDeviceListener(new DLNACastManager.DeviceListener() {
             @Override
-            public void onDeviceAdded(CastDevice device) {
-                if (!mDevices.contains(device)) {
-                    mDevices.add(device);
-                    if (mAdapter != null) {
-                        mAdapter.notifyDataSetChanged();
-                    }
+            public void onDevicesChanged() {
+                mDevices.clear();
+                if (DLNACastManager.get().getDevices() != null) {
+                    mDevices.addAll(DLNACastManager.get().getDevices());
                 }
-            }
-
-            @Override
-            public void onDeviceRemoved(CastDevice device) {
-                mDevices.remove(device);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();
                 }
