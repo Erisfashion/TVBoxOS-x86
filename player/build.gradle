@@ -7,7 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
-        
+
         ndk {
             abiFilters "x86"
         }
@@ -21,10 +21,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    
-    // ijkplayer 基础核心与 x86 原生解码库
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    // IJKPlayer 核心及 x86 解码库
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    // ExoPlayer 核心依赖 (适配 Android 4.x 的兼容版本)
+    api 'com.google.android.exoplayer:exoplayer-core:2.11.8'
+    api 'com.google.android.exoplayer:exoplayer-dash:2.11.8'
+    api 'com.google.android.exoplayer:exoplayer-hls:2.11.8'
+    api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
 }
