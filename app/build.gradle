@@ -11,6 +11,9 @@ android {
         versionName "1.0.0-x86-jb"
         multiDexEnabled true
 
+        // 开启矢量图向下兼容
+        vectorDrawables.useSupportLibrary = true
+        
         ndk {
             abiFilters "x86"
         }
