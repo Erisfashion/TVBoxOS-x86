@@ -34,7 +34,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         init();
     }
 
-    // 注意：项目工程规范使用的是 getLayoutResID()
     protected abstract int getLayoutResID();
 
     protected abstract void init();
@@ -75,6 +74,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void changeWallpaper(boolean enabled) {
+        // 兼容存根实现，防止子类/Fragment调用报错
+    }
+
     public void jumpActivity(Class<? extends Activity> targetClass) {
         jumpActivity(targetClass, null);
     }
@@ -95,7 +98,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void hideSysBar() {
+    public void hideSysBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
