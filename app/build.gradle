@@ -59,14 +59,15 @@ dependencies {
     // 3. 现代 TLS 1.2+ 加密引擎
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-    // 4. 注解支持库
+    // 4. 注解支持库与 IO 工具库（解决 SubtitleLoader 缺失的 ReaderInputStream）
     implementation 'org.jetbrains:annotations:19.0.0'
+    implementation 'commons-io:commons-io:2.11.0'
 
     // 5. 内置 HTTP 服务与字符编码检测库
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'com.github.albfernandez:juniversalchardet:2.5.0'
 
-    // 6. 稳定存在的开源库（权限请求与弹幕引擎）
+    // 6. 开源库（权限请求与弹幕引擎）
     implementation 'com.github.getActivity:XXPermissions:13.6'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
     implementation 'com.github.ctiao:ndkbitmap-x86:0.9.21'
