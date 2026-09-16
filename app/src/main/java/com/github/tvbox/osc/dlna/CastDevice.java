@@ -1,23 +1,44 @@
 package com.github.tvbox.osc.dlna;
 
 public class CastDevice {
-    private String name;
-    private String ip;
+    public static final int TYPE_TVBOX = 1;
+    public static final int TYPE_DLNA = 2;
 
-    public CastDevice(String name, String ip) {
-        this.name = name;
-        this.ip = ip;
+    private int type;
+    private String id = "";
+    private String name = "";
+
+    public CastDevice() {
     }
 
-    public static CastDevice dlna(Object device) {
-        return null;
+    public static CastDevice tvbox(String host) {
+        CastDevice device = new CastDevice();
+        device.type = TYPE_TVBOX;
+        device.id = host;
+        return device;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id != null ? id : "";
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
-        return name;
+        return name != null ? name : "";
     }
 
-    public String getIp() {
-        return ip;
+    public void setName(String name) {
+        this.name = name;
     }
 }
