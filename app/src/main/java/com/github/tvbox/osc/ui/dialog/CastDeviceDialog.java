@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.dlna.CastDevice;
 import com.github.tvbox.osc.dlna.CastVideo;
 import com.github.tvbox.osc.dlna.DLNACastManager;
@@ -19,8 +20,11 @@ public class CastDeviceDialog extends BaseDialog {
     private OnCastListener mCastListener;
 
     public interface OnCastListener {
-        void onCast(CastDevice device);
-        void onCancel();
+        default void onCast(CastDevice device) {}
+        default void onCancel() {}
+        default void onDismiss() {}
+        default void onItemClick(CastDevice device) {}
+        default void onSelected(CastDevice device) {}
     }
 
     public void setOnCastListener(OnCastListener listener) {
@@ -33,23 +37,31 @@ public class CastDeviceDialog extends BaseDialog {
     }
 
     @Override
-    protected void init() {
-        mRecyclerView = new RecyclerView(getContext());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new CastDeviceAdapter(mDevices);
-        mRecyclerView.setAdapter(mAdapter);
-        setContentView(mRecyclerView);
+    protected int getLayoutResID() {
+        return R.layout.dialog_cast;
+    }
 
-        mAdapter.setOnItemClickListener(position -> {
-            if (position >= 0 && position < mDevices.size()) {
-                CastDevice device = mDevices.get(position);
-                if (mCastListener != null) {
-                    mCastListener.onCast(device);
+    @Override
+    protected void init() {
+        mRecyclerView = findViewById(R.id.recyclerView);
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mAdapter = new CastDeviceAdapter(mDevices);
+            mRecyclerView.setAdapter(mAdapter);
+
+            mAdapter.setOnItemClickListener(position -> {
+                if (position >= 0 && position < mDevices.size()) {
+                    CastDevice device = mDevices.get(position);
+                    if (mCastListener != null) {
+                        mCastListener.onCast(device);
+                        mCastListener.onItemClick(device);
+                        mCastListener.onSelected(device);
+                    }
+                    castVideo(device);
+                    dismiss();
                 }
-                castVideo(device);
-                dismiss();
-            }
-        });
+            });
+        }
 
         searchDevices();
     }
@@ -57,12 +69,21 @@ public class CastDeviceDialog extends BaseDialog {
     private void searchDevices() {
         DLNACastManager.get().setDeviceListener(new DLNACastManager.DeviceListener() {
             @Override
-            public void onDevicesChanged() {
-                mDevices.clear();
-                if (DLNACastManager.get().getDevices() != null) {
-                    mDevices.addAll(DLNACastManager.get().getDevices());
+            public void onDeviceAdded(CastDevice device) {
+                if (!mDevices.contains(device)) {
+                    mDevices.add(device);
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
-                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onDeviceRemoved(CastDevice device) {
+                mDevices.remove(device);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         });
         DLNACastManager.get().search();
@@ -85,6 +106,7 @@ public class CastDeviceDialog extends BaseDialog {
     public void dismiss() {
         if (mCastListener != null) {
             mCastListener.onCancel();
+            mCastListener.onDismiss();
         }
         super.dismiss();
     }
