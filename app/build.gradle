@@ -48,7 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
 
-    // 1. Android 4.2.2 (Dalvik) 突破 64K 方法限制
+    // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // 2. Java 8 核心语法脱糖支持
@@ -65,10 +65,7 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 6. 提供 TvRecyclerView Java 类的正确依赖库
-    implementation 'com.github.owenleewho:TvRecyclerView:v1.2.6'
-
-    // 7. UI 与基础架构库
+    // 6. UI 与基础架构库（已彻底删除任何 tv-recyclerview 远程依赖）
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
