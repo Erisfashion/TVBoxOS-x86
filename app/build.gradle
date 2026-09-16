@@ -51,7 +51,15 @@ dependencies {
     implementation project(':quickjs')
     implementation project(':tvrecyclerview')
 
-    // 解决 package org.jetbrains.annotations does not exist
+    // XML 解析库 (解决 @XStreamAlias 符号缺失)
+    implementation ('com.thoughtworks.xstream:xstream:1.4.18') {
+        exclude group: 'xmlpull', module: 'xmlpull'
+    }
+
+    // 弹幕渲染引擎
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
+
+    // 注解库 (解决 @NotNull)
     implementation 'org.jetbrains:annotations:13.0'
 
     // Android 4.2.2 启动必备分包支持
