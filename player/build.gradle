@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 17
@@ -34,11 +34,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    // 核心：引入 ijkplayer Java 层及 x86 架构所需的 libijkffmpeg.so 等原生库
+    // 解决 OkHttpDataSource 与 ExoMediaSourceHelper 找不到 okhttp3 的报错
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+
+    // ijkplayer 及其 x86 软硬解 SO 动态库
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // ExoPlayer 保留 API 17 可用的最终分支版本
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.12.1'
+    // ExoPlayer 2.18.7（与源码中的 PlaybackException/Player.Listener 等符号完全匹配）
+    def exo_version = '2.18.7'
+    implementation "com.google.android.exoplayer:exoplayer-core:${exo_version}"
+    implementation "com.google.android.exoplayer:exoplayer-dash:${exo_version}"
+    implementation "com.google.android.exoplayer:exoplayer-hls:${exo_version}"
+    implementation "com.google.android.exoplayer:exoplayer-rtsp:${exo_version}"
+    implementation "com.google.android.exoplayer:extension-rtmp:${exo_version}"
 }
