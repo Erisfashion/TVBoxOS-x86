@@ -23,20 +23,15 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     
-    // 补齐 OkHttpDataSource.java 所需的网络库
+    // OkHttp 网络依赖
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // x86 原生解码库 (排除 ijkplayer-java，避免与本模块自带的 IJK 源码冲突)
+    // x86 原生解码支持 (排除 ijkplayer-java，防止与本地 IJK 源码冲突)
     implementation('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
         exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
     }
 
-    // ExoPlayer 2.11.8 (与 player 源码中的 HlsErrorHandlingPolicy 完全匹配)
+    // ExoPlayer 2.11.8 (与本地 HlsErrorHandlingPolicy 源码完全对齐)
     api 'com.google.android.exoplayer:exoplayer:2.11.8'
     api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
-
-    // 正确的 DKPlayer UI 官方 JitPack 坐标 (排除 dkplayer-java 防止类重复)
-    api('com.github.dueeeke.dkplayer:dkplayer-ui:3.3.5') {
-        exclude group: 'com.github.dueeeke.dkplayer', module: 'dkplayer-java'
-    }
 }
