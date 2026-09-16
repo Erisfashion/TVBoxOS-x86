@@ -4,7 +4,7 @@
     package="com.github.tvbox.osc">
 
     <!-- 覆盖第三方依赖中的 minSdkVersion 检查，确保能够顺利打包 API 17 -->
-    <uses-sdk tools:overrideLibrary="androidx.leanback, com.github.tvbox.osc, tv.danmaku.ijk.media.player, xyz.doikki.videoplayer.exo, androidx.room, com.google.android.exoplayer2, com.google.android.exoplayer2.ext.rtmp, com.google.android.exoplayer2.source.rtsp, com.google.android.exoplayer2.source.dash", com.owen.tv_recyclerview"/>
+    <uses-sdk tools:overrideLibrary="androidx.leanback, com.github.tvbox.osc, tv.danmaku.ijk.media.player, xyz.doikki.videoplayer.exo, androidx.room, com.google.android.exoplayer2, com.google.android.exoplayer2.ext.rtmp, com.google.android.exoplayer2.source.rtsp, com.google.android.exoplayer2.source.dash, com.owen.tv_recyclerview"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
