@@ -47,7 +47,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
-    implementation project(':quickjs') // 引入本地 quickjs 模块，彻底摆脱远程 401 报错
+    implementation project(':quickjs')
 
     // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -73,7 +73,7 @@ dependencies {
     }
     implementation 'com.google.guava:guava:30.1.1-android'
 
-    // 7. UI 与基础架构库
+    // 7. UI 与基础架构库（已将 BRVAH 降级为与源码匹配的 2.9.46 版本）
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
@@ -82,7 +82,7 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.2.6'
     annotationProcessor 'androidx.room:room-compiler:2.2.6'
     implementation 'com.orhanobut:hawk:2.0.1'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.kingja.loadsir:loadsir:1.3.8'
