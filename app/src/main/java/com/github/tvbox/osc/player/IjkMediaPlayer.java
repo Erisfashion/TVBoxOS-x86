@@ -198,4 +198,9 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
     public tv.danmaku.ijk.media.player.IjkMediaPlayer getInternalMediaPlayer() {
         return mMediaPlayer;
     }
+    
+    @Override
+    public void setKeepInBackground(boolean stayInBackground) {
+        // 占位存根实现
+    }
 }
