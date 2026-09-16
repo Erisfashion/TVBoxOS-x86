@@ -20,6 +20,7 @@ public class IjkMediaPlayer extends AbstractPlayer {
     private Context mContext;
     private Object mCodec;
     private float mSpeed = 1.0f;
+    private int mBufferPercent = 0;
 
     public IjkMediaPlayer(Context context, Object codec) {
         mContext = context;
@@ -51,14 +52,21 @@ public class IjkMediaPlayer extends AbstractPlayer {
             if (mPlayerEventListener != null) mPlayerEventListener.onCompletion();
         });
         mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
-            if (mPlayerEventListener != null) return mPlayerEventListener.onError(what, extra);
+            if (mPlayerEventListener != null) {
+                mPlayerEventListener.onError();
+                return true;
+            }
             return false;
         });
         mMediaPlayer.setOnInfoListener((mp, what, extra) -> {
-            if (mPlayerEventListener != null) return mPlayerEventListener.onInfo(what, extra);
+            if (mPlayerEventListener != null) {
+                mPlayerEventListener.onInfo(what, extra);
+                return true;
+            }
             return false;
         });
         mMediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+            mBufferPercent = percent;
             if (mPlayerEventListener != null) mPlayerEventListener.onBufferingUpdate(percent);
         });
         mMediaPlayer.setOnSeekCompleteListener(mp -> {
@@ -220,7 +228,6 @@ public class IjkMediaPlayer extends AbstractPlayer {
         return 0;
     }
 
-    // 补齐 AbstractPlayer 要求的速度控制抽象方法
     @Override
     public void setSpeed(float speed) {
         mSpeed = speed;
@@ -242,13 +249,24 @@ public class IjkMediaPlayer extends AbstractPlayer {
     }
 
     @Override
-    public float getBufferedPercentage() {
-        return 0;
+    public int getBufferedPercentage() {
+        return mBufferPercent;
     }
 
     @Override
     public boolean isLooping() {
         return mMediaPlayer != null && mMediaPlayer.isLooping();
+    }
+
+    // 补齐 AbstractPlayer 在当前版本中额外要求的抽象方法
+    @Override
+    public void setOptions() {
+        // 存根实现
+    }
+
+    @Override
+    public void pause(&boolean pause) {
+        // 兼容存根
     }
 
     // 扩展方法
