@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.tvbox.osc">
 
-    <!-- 覆盖第三方依赖中的 minSdkVersion 限制，防止编译合并清单时被拦截 -->
-    <uses-sdk tools:overrideLibrary="androidx.leanback, com.github.tvbox.osc, tv.danmaku.ijk.media.player, xyz.doikki.videoplayer.exo, androidx.room" />
+    <!-- 覆盖第三方依赖中的 minSdkVersion 检查，确保能够顺利打包 API 17 -->
+    <uses-sdk tools:overrideLibrary="androidx.leanback, com.github.tvbox.osc, tv.danmaku.ijk.media.player, xyz.doikki.videoplayer.exo, androidx.room, com.google.android.exoplayer2, com.google.android.exoplayer2.ext.rtmp, com.google.android.exoplayer2.source.rtsp, com.google.android.exoplayer2.source.dash" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,11 +13,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- 关键：声明支持触摸屏，兼容平板设备 -->
+    <!-- 声明触屏支持，适配平板电脑触摸交互 -->
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-    <!-- 允许非电视设备运行（避免被平板系统判定为不支持的应用） -->
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
@@ -33,7 +32,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 
-        <!-- 主入口：同时声明平板/手机桌面启动（LAUNCHER）与电视桌面启动（LEANBACK） -->
+        <!-- 平板/手机启动器（LAUNCHER）与电视启动器（LEANBACK_LAUNCHER）双支持 -->
         <activity
             android:name=".ui.activity.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -42,7 +41,6 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!-- 保证平板系统的桌面上能看到并点击图标 -->
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
@@ -93,7 +91,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
-        <!-- 远程推送服务 -->
         <service
             android:name=".server.RemoteServer"
             android:exported="false" />
