@@ -521,12 +521,12 @@ public class PlayFragment extends BaseLazyFragment {
         CastVideo video = new CastVideo(getCastUrl(webPlayUrl), getCastTitle(), headers, getCastPosition());
         CastDeviceDialog dialog = new CastDeviceDialog(requireActivity(), video);
         dialog.setOnCastListener(new CastDeviceDialog.OnCastListener() {
-            @Override
+
             public void onCastSuccess() {
                 if (mVideoView != null) mVideoView.pause();
             }
 
-            @Override
+
             public void onCastFailed() {}
         });
         dialog.show();
