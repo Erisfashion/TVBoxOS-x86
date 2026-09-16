@@ -178,4 +178,9 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
     public void setAudioStreamType(int streamtype) {
         if (mMediaPlayer != null) mMediaPlayer.setAudioStreamType(streamtype);
     }
+
+    @Override
+    public void setWakeMode(Context context, int mode) {
+        // 占位存根实现
+    }
 }
