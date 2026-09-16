@@ -48,7 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
     implementation project(':quickjs')
-    implementation project(':tvrecyclerview')[cite: 15]
+    implementation project(':tvrecyclerview')
 
     // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -60,9 +60,9 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
     // 4. 注解支持库
-    implementation 'org.jetbrains:annotations:19.0.0'[cite: 15]
+    implementation 'org.jetbrains:annotations:19.0.0'
 
-    // 5. DLNA 投屏核心与扩展库（解决 DLNACastManager 报错）
+    // 5. DLNA 投屏核心与扩展库
     implementation 'org.fourthline.cling:cling-core:2.1.2'
     implementation 'org.fourthline.cling:cling-support:2.1.2'
 
