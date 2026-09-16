@@ -30,7 +30,7 @@ jobs:
 
       # 核心优化：限制 max-workers=2 避免服务器内存暴涨触发 OOM
       - name: Build Debug APK
-        run: ./gradlew clean :app:assembleDebug --stacktrace --max-workers=2
+        run: ./gradlew clean :app:assembleDebug --stacktrace --no-daemon
 
       - name: Upload Output APK
         uses: actions/upload-artifact@v4
