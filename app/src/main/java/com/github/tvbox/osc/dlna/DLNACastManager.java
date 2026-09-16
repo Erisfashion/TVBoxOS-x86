@@ -26,8 +26,10 @@ public class DLNACastManager {
     public void cast(CastDevice device, CastVideo video, CastCallback callback) {}
 
     public interface DeviceListener {
-        void onDevicesChanged();
-        void onDeviceAdded(CastDevice device);
+        default void onDevicesChanged() {}
+        default void onDevicesChanged(java.util.List<CastDevice> devices) {}
+        default void onDeviceAdded(CastDevice device) {}
+        default void onDeviceRemoved(CastDevice device) {}
     }
 
     public interface CastCallback {
