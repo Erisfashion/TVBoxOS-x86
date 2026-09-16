@@ -89,12 +89,11 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    // 网络与 DNS (支持 Android 4.x 的稳定版本)
+    // 网络依赖 (移除了重复的 okhttp-dnsoverhttps 外部包，直接使用源码中的实现)
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
 
-    // 常用工具与本地服务
+    // 常用工具与本地服务 (移除了重复的 commons-io，本地已有对应类)
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'org.jsoup:jsoup:1.13.1'
@@ -102,5 +101,4 @@ dependencies {
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'com.kingja.loadsir:loadsir:1.3.8'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'commons-io:commons-io:2.8.0'
 }
