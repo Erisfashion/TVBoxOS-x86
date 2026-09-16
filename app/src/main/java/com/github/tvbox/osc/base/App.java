@@ -1,8 +1,11 @@
 package com.github.tvbox.osc.base;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 import androidx.multidex.MultiDex;
+import com.github.tvbox.osc.bean.VodInfo;
 import com.github.tvbox.osc.cache.RoomDataManger;
 import com.github.tvbox.osc.callback.EmptyCallback;
 import com.github.tvbox.osc.callback.LoadingCallback;
@@ -15,9 +18,36 @@ import org.conscrypt.Conscrypt;
 public class App extends Application {
 
     private static App instance;
+    private Activity currentActivity;
+    private VodInfo vodInfo;
+    private String dashData;
 
     public static App getInstance() {
         return instance;
+    }
+
+    public Activity getCurrentActivity() {
+        return currentActivity;
+    }
+
+    public void setCurrentActivity(Activity currentActivity) {
+        this.currentActivity = currentActivity;
+    }
+
+    public VodInfo getVodInfo() {
+        return vodInfo;
+    }
+
+    public void setVodInfo(VodInfo vodInfo) {
+        this.vodInfo = vodInfo;
+    }
+
+    public String getDashData() {
+        return dashData;
+    }
+
+    public void setDashData(String dashData) {
+        this.dashData = dashData;
     }
 
     @Override
@@ -38,6 +68,36 @@ public class App extends Application {
 
         super.onCreate();
         instance = this;
+
+        // 注册 Activity 生命周期监听，确保 getCurrentActivity() 随时获取当前前台 Activity
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
+
+            @Override
+            public void onActivityStarted(Activity activity) {}
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                currentActivity = activity;
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {}
+
+            @Override
+            public void onActivityStopped(Activity activity) {}
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                if (currentActivity == activity) {
+                    currentActivity = null;
+                }
+            }
+        });
 
         // 初始化本地轻量存储
         Hawk.init(this).build();
