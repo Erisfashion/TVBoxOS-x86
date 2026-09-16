@@ -258,10 +258,14 @@ public class IjkMediaPlayer extends AbstractPlayer {
         return mMediaPlayer != null && mMediaPlayer.isLooping();
     }
 
-    // 正确覆盖 AbstractPlayer 所要求的抽象方法
     @Override
     public void setOptions() {
         // 存根实现
+    }
+
+    @Override
+    public void setLogEnabled(boolean enable) {
+        // 补齐当前版本缺失的日志开关抽象方法
     }
 
     // 扩展方法
