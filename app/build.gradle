@@ -79,4 +79,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'me.jessyan:autosize:1.2.1'
+    // 确保包含 tv-recyclerview 支持库
+    implementation 'com.github.owen:tv-recyclerview:1.6.0'
 }
