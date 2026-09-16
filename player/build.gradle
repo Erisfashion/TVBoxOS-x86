@@ -31,7 +31,12 @@ dependencies {
         exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
     }
 
-    // ExoPlayer 2.14.2（原生兼容 API 16+，且包含 MediaItem 等完整接口）
-    api 'com.google.android.exoplayer:exoplayer:2.14.2'
-    api 'com.google.android.exoplayer:extension-rtmp:2.14.2'
+    // 必须使用 2.11.8：与 player 源码中的 HlsErrorHandlingPolicy 完全匹配
+    api 'com.google.android.exoplayer:exoplayer-core:2.11.8'
+    api 'com.google.android.exoplayer:exoplayer-dash:2.11.8'
+    api 'com.google.android.exoplayer:exoplayer-hls:2.11.8'
+    api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
+
+    // 引入 DKPlayer UI 依赖（提供 box_vod_control_view 所需的 dkplayer_* 资源及 center_container）
+    api 'xyz.doikki.videoplayer:videoplayer-ui:3.3.7'
 }
