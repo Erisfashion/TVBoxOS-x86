@@ -66,11 +66,10 @@ dependencies {
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'com.github.albfernandez:juniversalchardet:2.5.0'
 
-    // 6. 补充缺失的开源库（权限请求、弹幕引擎、文件选择器）
+    // 6. 稳定存在的开源库（权限请求与弹幕引擎）
     implementation 'com.github.getActivity:XXPermissions:13.6'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
     implementation 'com.github.ctiao:ndkbitmap-x86:0.9.21'
-    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
 
     // 7. 网络请求栈
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
