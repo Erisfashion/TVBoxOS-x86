@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      # 关键步骤：生成 local.properties 注入 SDK 路径，杜绝 FileNotFound 异常
+      # 关键步骤：生成 local.properties 注入 SDK 路径
       - name: Create local.properties
         run: |
           touch local.properties
@@ -28,9 +28,9 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      # 核心修改：加上 --refresh-dependencies 强制刷新依赖缓存并清理旧构建
+      # 核心优化：限制 max-workers=2 避免服务器内存暴涨触发 OOM
       - name: Build Debug APK
-        run: ./gradlew clean :app:assembleDebug --stacktrace --warning-mode all
+        run: ./gradlew clean :app:assembleDebug --stacktrace --max-workers=2
 
       - name: Upload Output APK
         uses: actions/upload-artifact@v4
