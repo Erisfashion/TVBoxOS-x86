@@ -84,7 +84,7 @@ public class CastDeviceDialog extends BaseDialog {
                 }
             }
 
-            @Override
+
             public void onDeviceRemoved(CastDevice device) {
                 mDevices.remove(device);
                 if (mAdapter != null) {
