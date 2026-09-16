@@ -28,9 +28,9 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      # 精确只编译 app 主模块的 Debug APK
+      # 核心修改：加上 --refresh-dependencies 强制刷新依赖缓存并清理旧构建
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+        run: ./gradlew clean --refresh-dependencies :app:assembleDebug --stacktrace
 
       - name: Upload Output APK
         uses: actions/upload-artifact@v4
