@@ -10,7 +10,6 @@ import android.view.SurfaceHolder;
 import java.io.FileDescriptor;
 import java.util.Map;
 
-import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.MediaInfo;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
@@ -20,8 +19,8 @@ public class IjkMediaPlayer extends AbstractPlayer {
     private tv.danmaku.ijk.media.player.IjkMediaPlayer mMediaPlayer;
     private Context mContext;
     private Object mCodec;
+    private float mSpeed = 1.0f;
 
-    // 匹配 PlayerHelper 中传递的构造函数签名
     public IjkMediaPlayer(Context context, Object codec) {
         mContext = context;
         mCodec = codec;
@@ -45,13 +44,29 @@ public class IjkMediaPlayer extends AbstractPlayer {
     }
 
     private void initListener() {
-        mMediaPlayer.setOnPreparedListener(mp -> mPlayerEventListener.onPrepared());
-        mMediaPlayer.setOnCompletionListener(mp -> mPlayerEventListener.onCompletion());
-        mMediaPlayer.setOnErrorListener((mp, what, extra) -> mPlayerEventListener.onError(what, extra));
-        mMediaPlayer.setOnInfoListener((mp, what, extra) -> mPlayerEventListener.onInfo(what, extra));
-        mMediaPlayer.setOnBufferingUpdateListener((mp, percent) -> mPlayerEventListener.onBufferingUpdate(percent));
-        mMediaPlayer.setOnSeekCompleteListener(mp -> mPlayerEventListener.onSeekComplete());
-        mMediaPlayer.setOnVideoSizeChangedListener((mp, width, height, sarNum, sarDen) -> mPlayerEventListener.onVideoSizeChanged(width, height));
+        mMediaPlayer.setOnPreparedListener(mp -> {
+            if (mPlayerEventListener != null) mPlayerEventListener.onPrepared();
+        });
+        mMediaPlayer.setOnCompletionListener(mp -> {
+            if (mPlayerEventListener != null) mPlayerEventListener.onCompletion();
+        });
+        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            if (mPlayerEventListener != null) return mPlayerEventListener.onError(what, extra);
+            return false;
+        });
+        mMediaPlayer.setOnInfoListener((mp, what, extra) -> {
+            if (mPlayerEventListener != null) return mPlayerEventListener.onInfo(what, extra);
+            return false;
+        });
+        mMediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+            if (mPlayerEventListener != null) mPlayerEventListener.onBufferingUpdate(percent);
+        });
+        mMediaPlayer.setOnSeekCompleteListener(mp -> {
+            if (mPlayerEventListener != null) mPlayerEventListener.onSeekComplete();
+        });
+        mMediaPlayer.setOnVideoSizeChangedListener((mp, width, height, sarNum, sarDen) -> {
+            if (mPlayerEventListener != null) mPlayerEventListener.onVideoSizeChanged(width, height);
+        });
     }
 
     @Override
@@ -205,7 +220,38 @@ public class IjkMediaPlayer extends AbstractPlayer {
         return 0;
     }
 
-    // 暴露给 PlayFragment 调用的轨道方法
+    // 补齐 AbstractPlayer 要求的速度控制抽象方法
+    @Override
+    public void setSpeed(float speed) {
+        mSpeed = speed;
+        try {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.setSpeed(speed);
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
+    public void setPitch(float pitch) {
+        // 存根
+    }
+
+    @Override
+    public float getSpeed() {
+        return mSpeed;
+    }
+
+    @Override
+    public float getBufferedPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean isLooping() {
+        return mMediaPlayer != null && mMediaPlayer.isLooping();
+    }
+
+    // 扩展方法
     public ITrackInfo[] getTrackInfo() {
         return mMediaPlayer != null ? mMediaPlayer.getTrackInfo() : null;
     }
