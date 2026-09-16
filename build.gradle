@@ -16,6 +16,7 @@ allprojects {
         mavenCentral() // 必须把中央仓库放在最前面，确保先从 MavenCentral 寻找
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://jitpack.io' }
+        maven { url 'https://4thline.org/m2/' }
     }
 }
 
