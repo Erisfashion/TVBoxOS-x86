@@ -42,25 +42,11 @@
 
     <attr name="startColor" format="reference|color" />
     <attr name="topDelta" format="float" />
-    <!-- Selected Paint Color (color). -->
     <attr name="endColor" format="reference|color" />
 
     <declare-styleable name="CardViewShadow">
-        <!-- Default Paint Color (color). -->
         <attr name="startColor" />
-        <!-- Selected Paint Color (color). -->
         <attr name="endColor" />
         <attr name="topDelta" />
-    </declare-styleable>
-
-    <!-- 全局声明缺失的 tv_ 属性，保证 AAPT2 资源链接正常通过 -->
-    <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
-    <attr name="tv_verticalSpacingWithMargins" format="dimension" />
-    <attr name="tv_selectedItemIsCentered" format="boolean" />
-
-    <declare-styleable name="TvRecyclerView">
-        <attr name="tv_horizontalSpacingWithMargins" />
-        <attr name="tv_verticalSpacingWithMargins" />
-        <attr name="tv_selectedItemIsCentered" />
     </declare-styleable>
 </resources>
