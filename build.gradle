@@ -4,6 +4,7 @@ buildscript {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url "https://jitpack.io" }
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/releases" }
@@ -31,6 +32,7 @@ allprojects {
             url "http://4thline.org/m2"
             allowInsecureProtocol = true
         }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url "https://jitpack.io" }
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/releases" }
