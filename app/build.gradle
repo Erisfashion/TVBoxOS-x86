@@ -51,15 +51,19 @@ dependencies {
     implementation project(':quickjs')
     implementation project(':tvrecyclerview')
 
-    // XML 解析库 (解决 @XStreamAlias 符号缺失)
+    // 权限申请库 (解决 com.hjq.permissions 缺失)
+    implementation 'com.github.getActivity:XXPermissions:11.6'
+
+    // 文本编码识别 (解决 org.mozilla.universalchardet 缺失)
+    implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+
+    // XML 解析与弹幕组件
     implementation ('com.thoughtworks.xstream:xstream:1.4.18') {
         exclude group: 'xmlpull', module: 'xmlpull'
     }
-
-    // 弹幕渲染引擎
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
 
-    // 注解库 (解决 @NotNull)
+    // 注解支持
     implementation 'org.jetbrains:annotations:13.0'
 
     // Android 4.2.2 启动必备分包支持
@@ -72,10 +76,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
 
-    // 屏幕适配库 (提供 AutoSizeUtils)
+    // 屏幕适配与列表适配器
     implementation 'me.jessyan:autosize:1.2.1'
-
-    // 核心列表适配器库 (2.x 版本，匹配 BaseViewHolder)
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
     // Room 数据库组件
@@ -92,7 +94,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
 
-    // 常用工具与服务
+    // 常用工具与本地服务
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'org.jsoup:jsoup:1.13.1'
