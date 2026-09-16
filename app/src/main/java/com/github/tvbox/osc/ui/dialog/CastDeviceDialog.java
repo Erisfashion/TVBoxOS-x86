@@ -4,7 +4,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.dlna.CastDevice;
 import com.github.tvbox.osc.dlna.CastVideo;
 import com.github.tvbox.osc.dlna.DLNACastManager;
@@ -25,6 +24,9 @@ public class CastDeviceDialog extends BaseDialog {
         default void onDismiss() {}
         default void onItemClick(CastDevice device) {}
         default void onSelected(CastDevice device) {}
+        default void onDeviceAdded(CastDevice device) {}
+        default void onDeviceRemoved(CastDevice device) {}
+        default void onDevicesChanged() {}
     }
 
     public void setOnCastListener(OnCastListener listener) {
@@ -34,25 +36,21 @@ public class CastDeviceDialog extends BaseDialog {
     public CastDeviceDialog(@NonNull Context context, CastVideo video) {
         super(context);
         this.video = video;
+        initView();
     }
 
-    @Override
-    protected int getLayoutResID() {
-        return R.layout.dialog_cast;
+    public CastDeviceDialog(Context context) {
+        super(context);
+        initView();
     }
 
-    @Override
-    protected void init() {
-        mRecyclerView = findViewById(R.id.recyclerView);
-        if (mRecyclerView == null) {
-            // 如果 XML 中没有定义，则通过代码动态创建，防止找不到 ID 报错
-            mRecyclerView = new RecyclerView(getContext());
-            setContentView(mRecyclerView);
-        }
-        
+    private void initView() {
+        // 使用纯代码创建 RecyclerView，避免依赖特定的 XML 布局 ID 导致找不到 ID 报错
+        mRecyclerView = new RecyclerView(getContext());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new CastDeviceAdapter(mDevices);
         mRecyclerView.setAdapter(mAdapter);
+        setContentView(mRecyclerView);
 
         mAdapter.setOnItemClickListener(position -> {
             if (position >= 0 && position < mDevices.size()) {
@@ -73,13 +71,28 @@ public class CastDeviceDialog extends BaseDialog {
     private void searchDevices() {
         DLNACastManager.get().setDeviceListener(new DLNACastManager.DeviceListener() {
             @Override
-            public void onDevicesChanged() {
-                mDevices.clear();
-                if (DLNACastManager.get().getDevices() != null) {
-                    mDevices.addAll(DLNACastManager.get().getDevices());
+            public void onDeviceAdded(CastDevice device) {
+                if (!mDevices.contains(device)) {
+                    mDevices.add(device);
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
+                if (mCastListener != null) {
+                    mCastListener.onDeviceAdded(device);
+                    mCastListener.onDevicesChanged();
+                }
+            }
+
+            @Override
+            public void onDeviceRemoved(CastDevice device) {
+                mDevices.remove(device);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();
+                }
+                if (mCastListener != null) {
+                    mCastListener.onDeviceRemoved(device);
+                    mCastListener.onDevicesChanged();
                 }
             }
         });
