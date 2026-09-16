@@ -106,24 +106,6 @@
     <dimen name="ts_19">19sp</dimen>
     <dimen name="dp_4">4dp</dimen>
     <dimen name="sp_14">14sp</dimen>
-    <!-- 补充缺失的尺寸定义 -->
-    <dimen name="dp_40">40dp</dimen>
-    <dimen name="dp_4">4dp</dimen>
-    <dimen name="sp_14">14sp</dimen>
-    <dimen name="preview_player_radius">4dp</dimen>
-    <dimen name="ts_18">18sp</dimen>
-    <dimen name="ts_19">19sp</dimen>
-    <dimen name="dkplayer_controller_height">48dp</dimen>
-    <dimen name="dkplayer_controller_icon_padding">6dp</dimen>
-    <dimen name="dkplayer_controller_time_text_size">12sp</dimen>
-
     <!-- 解决 LiveController 与播放器缺失的 ID 声明 -->
-    <item name="center_container" type="id" />
     <item name="loading" type="id" />
-
-    <!-- 播放器 Drawable 资源重映射 -->
-    <drawable name="dkplayer_shape_stardard_controller_bottom_bg">#80000000</drawable>
-    <drawable name="dkplayer_selector_play_button">@drawable/icon_play</drawable>
-    <drawable name="dkplayer_layer_progress_bar">@android:drawable/progress_horizontal</drawable>
-    <drawable name="dkplayer_seekbar_thumb">@drawable/seekbar_thumb_normal</drawable>
 </resources>
