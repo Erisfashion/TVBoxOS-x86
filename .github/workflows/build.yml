@@ -30,7 +30,7 @@ jobs:
 
       # 核心修改：加上 --refresh-dependencies 强制刷新依赖缓存并清理旧构建
       - name: Build Debug APK
-        run: ./gradlew clean --refresh-dependencies :app:assembleDebug --stacktrace
+        run: ./gradlew clean --refresh-dependencies :app:assembleDebug --stacktrace --info
 
       - name: Upload Output APK
         uses: actions/upload-artifact@v4
