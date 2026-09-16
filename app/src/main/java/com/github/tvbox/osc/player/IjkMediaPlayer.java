@@ -183,4 +183,19 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
     public void setWakeMode(Context context, int mode) {
         // 占位存根实现
     }
+
+    @Override
+    public int getVideoSarNum() {
+        return mMediaPlayer != null ? mMediaPlayer.getVideoSarNum() : 1;
+    }
+
+    @Override
+    public int getVideoSarDen() {
+        return mMediaPlayer != null ? mMediaPlayer.getVideoSarDen() : 1;
+    }
+
+    // 提供对内部原生对象的访问，方便高级播放控制
+    public tv.danmaku.ijk.media.player.IjkMediaPlayer getInternalMediaPlayer() {
+        return mMediaPlayer;
+    }
 }
