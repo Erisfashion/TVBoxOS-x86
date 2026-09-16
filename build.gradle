@@ -2,8 +2,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        jcenter()
+        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://jitpack.io' }
     }
     dependencies {
@@ -14,11 +13,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        mavenCentral()
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        jcenter()
-        maven { url 'https://jitpack.io' }
+        mavenCentral() // 必须把中央仓库放在最前面，确保先从 MavenCentral 寻找
         maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://jitpack.io' }
     }
 }
 
