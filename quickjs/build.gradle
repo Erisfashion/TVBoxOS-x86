@@ -10,8 +10,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 17    // 关键：从 19 降到 17，适配 Android 4.2.2
         targetSdkVersion 28
+
+        ndk {
+            abiFilters 'x86' // 关键：强制让库内原生 SO 编译或匹配 x86 架构
+        }
     }
 
     buildTypes {
@@ -22,6 +26,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
