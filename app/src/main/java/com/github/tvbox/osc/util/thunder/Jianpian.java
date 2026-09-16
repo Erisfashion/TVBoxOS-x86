@@ -2,7 +2,10 @@ package com.github.tvbox.osc.util.thunder;
 
 public class Jianpian {
     public static void start(String url) {
-        // x86 及 Android 4.2 环境停用该 P2P 引擎，避免崩溃与编译错误
+        // x86 与 Android 4.2.2 架构下停用该组件，直接置空
+    }
+
+    public static void play(String url) {
     }
 
     public static void stop() {
