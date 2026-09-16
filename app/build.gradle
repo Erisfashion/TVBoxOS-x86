@@ -61,15 +61,19 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
 
+    // 核心列表适配器库 (提供 BRVAH 架构)
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+
     // Room 数据库组件
     implementation 'androidx.room:room-runtime:2.2.5'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
 
-    // Glide 图片加载
+    // 图片加载 (Glide 与 Picasso)
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
-    // 网络与 DNS
+    // 网络与 DNS (支持 Android 4.x 的稳定版本)
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
