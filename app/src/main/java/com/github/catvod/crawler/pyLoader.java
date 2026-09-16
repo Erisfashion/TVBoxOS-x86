@@ -1,5 +1,10 @@
 package com.github.catvod.crawler;
 
-public class pyLoader {
-    // 占位存根，避免编译期找不到符号
+import com.github.catvod.crawler.python.IPyLoader;
+
+public class pyLoader implements IPyLoader {
+    @Override
+    public Spider getSpider(String key, String api, String ext) {
+        return new SpiderNull();
+    }
 }
