@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.github.tvbox.osc"
@@ -48,19 +48,19 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
 
-    // Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
+    // Android 4.2.2 (Dalvik) 突破 64K 方法限制
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Java 8 核心语法脱糖支持
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
-    // Android 4.2.2 现代 TLS 1.2+ 加密引擎
+    // 现代 TLS 1.2+ 加密引擎
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-    // 网络请求栈锁定版本
+    // 网络请求栈锁定在支持 API 17 的最高版
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // x86 解码原生库
+    // x86 原生库解析
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
