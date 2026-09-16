@@ -26,12 +26,14 @@ dependencies {
     // OkHttp 网络依赖
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // x86 原生解码支持 (排除 ijkplayer-java，防止与本地 IJK 源码冲突)
-    implementation('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
+    // 仅在运行时注入 x86 解码动态库，避免与 player 模块自带的 IJK 源码类冲突
+    runtimeOnly('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
         exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
     }
 
-    // ExoPlayer 2.11.8 (与本地 HlsErrorHandlingPolicy 源码完全对齐)
-    api 'com.google.android.exoplayer:exoplayer:2.11.8'
-    api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
+    // 对齐源码所依赖的 ExoPlayer 2.14.2 模块
+    api 'com.google.android.exoplayer:exoplayer-core:2.14.2'
+    api 'com.google.android.exoplayer:exoplayer-dash:2.14.2'
+    api 'com.google.android.exoplayer:exoplayer-hls:2.14.2'
+    api 'com.google.android.exoplayer:extension-rtmp:2.14.2'
 }
