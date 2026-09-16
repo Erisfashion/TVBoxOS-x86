@@ -54,10 +54,10 @@ dependencies {
     // 2. Java 8 核心语法脱糖支持
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
-    // 3. 现代 TLS 1.2+ 加密引擎（解决 Android 4.2 HTTPS 报错）
+    // 3. 现代 TLS 1.2+ 加密引擎
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-    // 4. 网络请求栈锁定在支持 API 17 的版本
+    // 4. 网络请求栈
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.lzy.net:okgo:3.0.4'
 
@@ -65,7 +65,15 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 6. UI 与基础架构库（已彻底删除任何 tv-recyclerview 远程依赖）
+    // 6. 核心爬虫解析与 JS 运行环境库（解决 100 处编译符号缺失）
+    implementation 'com.github.taoweihua:quickjs-android:0.8.4'
+    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation('com.thoughtworks.xstream:xstream:1.4.18') {
+        exclude group: 'xmlpull', module: 'xmlpull'
+    }
+    implementation 'com.google.guava:guava:30.1.1-android'
+
+    // 7. UI 与基础架构库
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.leanback:leanback:1.0.0'
