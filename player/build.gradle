@@ -22,14 +22,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    
+    // 补齐 OkHttpDataSource.java 所需的网络库
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // IJKPlayer 核心及 x86 解码库
-    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
-    implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    // 引入 x86 解码库，并排除 java 依赖（防止与 player 自带的 IjkMediaPlayer 源码冲突）
+    implementation('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
+        exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
+    }
 
-    // ExoPlayer 核心依赖 (适配 Android 4.x 的兼容版本)
-    api 'com.google.android.exoplayer:exoplayer-core:2.11.8'
-    api 'com.google.android.exoplayer:exoplayer-dash:2.11.8'
-    api 'com.google.android.exoplayer:exoplayer-hls:2.11.8'
-    api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
+    // ExoPlayer 2.14.2（原生兼容 API 16+，且包含 MediaItem 等完整接口）
+    api 'com.google.android.exoplayer:exoplayer:2.14.2'
+    api 'com.google.android.exoplayer:extension-rtmp:2.14.2'
 }
