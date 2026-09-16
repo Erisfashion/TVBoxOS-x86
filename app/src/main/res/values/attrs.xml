@@ -48,8 +48,6 @@
         <attr name="endColor" />
         <attr name="topDelta" />
     </declare-styleable>
-    <!-- 补充缺失的 TvRecyclerView 自定义属性声明 -->
-    <declare-styleable name="TvRecyclerView">
         <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
         <attr name="tv_verticalSpacingWithMargins" format="dimension" />
         <attr name="tv_selectedItemIsCentered" format="boolean" />
