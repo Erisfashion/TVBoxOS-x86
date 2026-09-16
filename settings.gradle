@@ -1,1 +1,1 @@
-include ':app', ':player', ':quickjs'
+include ':app', ':player', ':quickjs', ':tvrecyclerview'
