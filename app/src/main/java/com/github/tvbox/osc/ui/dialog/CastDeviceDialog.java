@@ -1,8 +1,6 @@
 package com.github.tvbox.osc.ui.dialog;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +35,7 @@ public class CastDeviceDialog extends BaseDialog {
         mAdapter = new CastDeviceAdapter(mDevices);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+        mAdapter.setOnItemClickListener(position -> {
             CastDevice device = mDevices.get(position);
             castVideo(device);
             dismiss();
