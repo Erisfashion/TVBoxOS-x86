@@ -9,6 +9,8 @@ public class ChooserDialog {
     public ChooserDialog withStartFile(String path) { return this; }
     public ChooserDialog withFilter(boolean allowDir, boolean allowFiles, String... extensions) { return this; }
     public ChooserDialog into(Result callback) { return this; }
+    public ChooserDialog withChosenListener(Result callback) { return this; }
+    public ChooserDialog build() { return this; }
     public void show() {}
 
     public interface Result {
