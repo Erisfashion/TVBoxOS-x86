@@ -29,3 +29,15 @@ subprojects {
         }
     }
 }
+// 强制所有子模块统一使用 API 17 与编译参数
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            android {
+                defaultConfig {
+                    minSdkVersion 17
+                }
+            }
+        }
+    }
+}
