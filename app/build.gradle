@@ -61,8 +61,11 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
 
-    // 核心列表适配器库 (提供 BRVAH 架构)
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+    // 屏幕适配库 (提供 AutoSizeUtils)
+    implementation 'me.jessyan:autosize:1.2.1'
+
+    // 核心列表适配器库 (必须为 2.x 版本，匹配源码中的 BaseViewHolder)
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
     // Room 数据库组件
     implementation 'androidx.room:room-runtime:2.2.5'
