@@ -4,7 +4,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.dlna.CastDevice;
 import com.github.tvbox.osc.dlna.CastVideo;
 import com.github.tvbox.osc.dlna.DLNACastManager;
@@ -17,6 +16,16 @@ public class CastDeviceDialog extends BaseDialog {
     private CastDeviceAdapter mAdapter;
     private List<CastDevice> mDevices = new ArrayList<>();
     private CastVideo video;
+    private OnCastListener mCastListener;
+
+    public interface OnCastListener {
+        void onCast(CastDevice device);
+        void onCancel();
+    }
+
+    public void setOnCastListener(OnCastListener listener) {
+        this.mCastListener = listener;
+    }
 
     public CastDeviceDialog(@NonNull Context context, CastVideo video) {
         super(context);
@@ -24,21 +33,22 @@ public class CastDeviceDialog extends BaseDialog {
     }
 
     @Override
-    protected int getLayoutResID() {
-        return R.layout.dialog_cast;
-    }
-
-    @Override
     protected void init() {
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView = new RecyclerView(getContext());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new CastDeviceAdapter(mDevices);
         mRecyclerView.setAdapter(mAdapter);
+        setContentView(mRecyclerView);
 
         mAdapter.setOnItemClickListener(position -> {
-            CastDevice device = mDevices.get(position);
-            castVideo(device);
-            dismiss();
+            if (position >= 0 && position < mDevices.size()) {
+                CastDevice device = mDevices.get(position);
+                if (mCastListener != null) {
+                    mCastListener.onCast(device);
+                }
+                castVideo(device);
+                dismiss();
+            }
         });
 
         searchDevices();
@@ -47,16 +57,11 @@ public class CastDeviceDialog extends BaseDialog {
     private void searchDevices() {
         DLNACastManager.get().setDeviceListener(new DLNACastManager.DeviceListener() {
             @Override
-            public void onDeviceAdded(CastDevice device) {
-                if (!mDevices.contains(device)) {
-                    mDevices.add(device);
-                    mAdapter.notifyDataSetChanged();
+            public void onDevicesChanged() {
+                mDevices.clear();
+                if (DLNACastManager.get().getDevices() != null) {
+                    mDevices.addAll(DLNACastManager.get().getDevices());
                 }
-            }
-
-            @Override
-            public void onDeviceRemoved(CastDevice device) {
-                mDevices.remove(device);
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -78,7 +83,9 @@ public class CastDeviceDialog extends BaseDialog {
 
     @Override
     public void dismiss() {
-        DLNACastManager.get().stopSearch();
+        if (mCastListener != null) {
+            mCastListener.onCancel();
+        }
         super.dismiss();
     }
 }
