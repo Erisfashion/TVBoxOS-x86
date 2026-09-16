@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
+    implementation project(':quickjs') // 引入本地 quickjs 模块，彻底摆脱远程 401 报错
 
     // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -65,8 +66,7 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 6. 核心爬虫解析与 JS 引擎库（修正为正确的 io.github.whataa 坐标，走 MavenCentral）
-    implementation 'io.github.whataa:quickjs-android:0.8.4'
+    // 6. 爬虫解析常规库
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation('com.thoughtworks.xstream:xstream:1.4.18') {
         exclude group: 'xmlpull', module: 'xmlpull'
