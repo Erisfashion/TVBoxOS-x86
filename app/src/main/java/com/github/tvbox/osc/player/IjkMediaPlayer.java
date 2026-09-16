@@ -4,26 +4,35 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.util.Map;
-import tv.danmaku.ijk.media.player.AbstractMediaPlayer;
+
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.MediaInfo;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+import xyz.doikki.videoplayer.player.AbstractPlayer;
 
-public class IjkMediaPlayer extends AbstractMediaPlayer {
+public class IjkMediaPlayer extends AbstractPlayer {
 
     private tv.danmaku.ijk.media.player.IjkMediaPlayer mMediaPlayer;
+    private Context mContext;
+    private Object mCodec;
 
-    public IjkMediaPlayer() {
-        initPlayer();
+    // 匹配 PlayerHelper 中传递的构造函数签名
+    public IjkMediaPlayer(Context context, Object codec) {
+        mContext = context;
+        mCodec = codec;
     }
 
-    private void initPlayer() {
+    @Override
+    public void initPlayer() {
         mMediaPlayer = new tv.danmaku.ijk.media.player.IjkMediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        // 针对 Android x86 / 4.2.2 核心优化配置
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 0);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 0);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 0);
@@ -31,174 +40,191 @@ public class IjkMediaPlayer extends AbstractMediaPlayer {
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1);
         mMediaPlayer.setOption(tv.danmaku.ijk.media.player.IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
+
+        initListener();
+    }
+
+    private void initListener() {
+        mMediaPlayer.setOnPreparedListener(mp -> mPlayerEventListener.onPrepared());
+        mMediaPlayer.setOnCompletionListener(mp -> mPlayerEventListener.onCompletion());
+        mMediaPlayer.setOnErrorListener((mp, what, extra) -> mPlayerEventListener.onError(what, extra));
+        mMediaPlayer.setOnInfoListener((mp, what, extra) -> mPlayerEventListener.onInfo(what, extra));
+        mMediaPlayer.setOnBufferingUpdateListener((mp, percent) -> mPlayerEventListener.onBufferingUpdate(percent));
+        mMediaPlayer.setOnSeekCompleteListener(mp -> mPlayerEventListener.onSeekComplete());
+        mMediaPlayer.setOnVideoSizeChangedListener((mp, width, height, sarNum, sarDen) -> mPlayerEventListener.onVideoSizeChanged(width, height));
     }
 
     @Override
-    public void setDisplay(SurfaceHolder sh) {
-        if (mMediaPlayer != null) mMediaPlayer.setDisplay(sh);
+    public void setDataSource(String path, Map<String, String> headers) {
+        try {
+            if (headers != null && !headers.isEmpty()) {
+                mMediaPlayer.setDataSource(mContext, Uri.parse(path), headers);
+            } else {
+                mMediaPlayer.setDataSource(path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setSurface(Surface surface) {
-        if (mMediaPlayer != null) mMediaPlayer.setSurface(surface);
+    public void setDataSource(AssetFileDescriptor fd) {
+        try {
+            mMediaPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setDataSource(Context context, Uri uri) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.setDataSource(context, uri);
+    public void prepareAsync() {
+        try {
+            mMediaPlayer.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setDataSource(Context context, Uri uri, Map<String, String> headers) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.setDataSource(context, uri, headers);
+    public void start() {
+        try {
+            mMediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setDataSource(FileDescriptor fd) throws IOException, IllegalArgumentException, IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.setDataSource(fd);
+    public void pause() {
+        try {
+            mMediaPlayer.pause();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.setDataSource(path);
+    public void stop() {
+        try {
+            mMediaPlayer.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public String getDataSource() {
-        return mMediaPlayer != null ? mMediaPlayer.getDataSource() : null;
-    }
-
-    @Override
-    public void prepareAsync() throws IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.prepareAsync();
-    }
-
-    @Override
-    public void start() throws IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.start();
-    }
-
-    @Override
-    public void stop() throws IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.stop();
-    }
-
-    @Override
-    public void pause() throws IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.pause();
-    }
-
-    @Override
-    public void setScreenOnWhilePlaying(boolean screenOn) {
-        if (mMediaPlayer != null) mMediaPlayer.setScreenOnWhilePlaying(screenOn);
-    }
-
-    @Override
-    public int getVideoWidth() {
-        return mMediaPlayer != null ? mMediaPlayer.getVideoWidth() : 0;
-    }
-
-    @Override
-    public int getVideoHeight() {
-        return mMediaPlayer != null ? mMediaPlayer.getVideoHeight() : 0;
+    public void reset() {
+        try {
+            mMediaPlayer.reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean isPlaying() {
-        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+        try {
+            return mMediaPlayer.isPlaying();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public void seekTo(long msec) throws IllegalStateException {
-        if (mMediaPlayer != null) mMediaPlayer.seekTo(msec);
+    public void seekTo(long time) {
+        try {
+            mMediaPlayer.seekTo(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public long getCurrentPosition() {
-        return mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0;
+        try {
+            return mMediaPlayer.getCurrentPosition();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
     public long getDuration() {
-        return mMediaPlayer != null ? mMediaPlayer.getDuration() : 0;
+        try {
+            return mMediaPlayer.getDuration();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
     public void release() {
         if (mMediaPlayer != null) {
-            mMediaPlayer.resetListeners();
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }
 
     @Override
-    public void reset() {
-        if (mMediaPlayer != null) mMediaPlayer.reset();
-    }
-
-    @Override
     public void setVolume(float leftVolume, float rightVolume) {
-        if (mMediaPlayer != null) mMediaPlayer.setVolume(leftVolume, rightVolume);
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setVolume(leftVolume, rightVolume);
+        }
     }
 
     @Override
-    public int getAudioSessionId() {
-        return mMediaPlayer != null ? mMediaPlayer.getAudioSessionId() : 0;
+    public void setLooping(boolean isLooping) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setLooping(isLooping);
+        }
     }
 
     @Override
-    public MediaInfo getMediaInfo() {
-        return mMediaPlayer != null ? mMediaPlayer.getMediaInfo() : null;
+    public void setSurface(Surface surface) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setSurface(surface);
+        }
     }
 
     @Override
-    public void setLooping(boolean looping) {
-        if (mMediaPlayer != null) mMediaPlayer.setLooping(looping);
+    public void setDisplay(SurfaceHolder holder) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setDisplay(holder);
+        }
     }
 
     @Override
-    public boolean isLooping() {
-        return mMediaPlayer != null && mMediaPlayer.isLooping();
+    public void setScreenOnWhilePlaying(boolean screenOn) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setScreenOnWhilePlaying(screenOn);
+        }
     }
 
     @Override
+    public long getTcpSpeed() {
+        return 0;
+    }
+
+    // 暴露给 PlayFragment 调用的轨道方法
     public ITrackInfo[] getTrackInfo() {
         return mMediaPlayer != null ? mMediaPlayer.getTrackInfo() : null;
     }
 
-    @Override
-    public void setAudioStreamType(int streamtype) {
-        if (mMediaPlayer != null) mMediaPlayer.setAudioStreamType(streamtype);
+    public void setTrack(int trackId, String progressKey) {
+        if (mMediaPlayer != null) {
+            try {
+                mMediaPlayer.selectTrack(trackId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    @Override
-    public void setWakeMode(Context context, int mode) {}
-
-    @Override
-    public int getVideoSarNum() {
-        return mMediaPlayer != null ? mMediaPlayer.getVideoSarNum() : 1;
-    }
-
-    @Override
-    public int getVideoSarDen() {
-        return mMediaPlayer != null ? mMediaPlayer.getVideoSarDen() : 1;
-    }
-
-    @Override
-    public void setKeepInBackground(boolean stayInBackground) {}
-
-    @Override
-    public boolean isPlayable() {
-        return true;
+    public void loadDefaultTrack(String progressKey) {
+        // 兼容存根
     }
 
     public tv.danmaku.ijk.media.player.IjkMediaPlayer getInternalMediaPlayer() {
         return mMediaPlayer;
-    }
-
-    @Override
-    public void setLogEnabled(boolean enable) {
-        // 占位存根实现
     }
 }
