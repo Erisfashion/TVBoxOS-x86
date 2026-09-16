@@ -50,7 +50,7 @@
         <attr name="topDelta" />
     </declare-styleable>
 
-    <!-- 解决 AAPT2 报错缺失的 tv_ 属性 -->
+    <!-- 解决 AAPT2 链接报错的 tv_ 属性定义 -->
     <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
     <attr name="tv_verticalSpacingWithMargins" format="dimension" />
     <attr name="tv_selectedItemIsCentered" format="boolean" />
