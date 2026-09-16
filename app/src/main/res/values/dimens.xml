@@ -2,5 +2,21 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <!-- 补齐 item_view_load_more 所需尺寸 -->
     <dimen name="dp_40">40dp</dimen>
+
+    <!-- 补齐 box_vod_control_view 所需的尺寸定义 -->
+    <dimen name="dkplayer_controller_height">48dp</dimen>
+    <dimen name="dkplayer_controller_icon_padding">6dp</dimen>
+    <dimen name="dkplayer_controller_time_text_size">12sp</dimen>
+
+    <!-- 补齐缺失的 center_container ID -->
+    <item name="center_container" type="id" />
+
+    <!-- 映射缺失的 Drawable 资源至本地现有资源 -->
+    <drawable name="dkplayer_shape_stardard_controller_bottom_bg">#80000000</drawable>
+    <drawable name="dkplayer_selector_play_button">@drawable/icon_play</drawable>
+    <drawable name="dkplayer_layer_progress_bar">@android:drawable/progress_horizontal</drawable>
+    <drawable name="dkplayer_seekbar_thumb">@drawable/seekbar_thumb_normal</drawable>
 </resources>
