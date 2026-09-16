@@ -26,17 +26,17 @@ dependencies {
     // 补齐 OkHttpDataSource.java 所需的网络库
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
 
-    // 引入 x86 解码库，并排除 java 依赖（防止与 player 自带的 IjkMediaPlayer 源码冲突）
+    // 引入 x86 解码库，排除 java 依赖（避免与 player 模块自带的 IjkMediaPlayer 源码冲突）
     implementation('tv.danmaku.ijk.media:ijkplayer-x86:0.8.8') {
         exclude group: 'tv.danmaku.ijk.media', module: 'ijkplayer-java'
     }
 
-    // 必须使用 2.11.8：与 player 源码中的 HlsErrorHandlingPolicy 完全匹配
-    api 'com.google.android.exoplayer:exoplayer-core:2.11.8'
-    api 'com.google.android.exoplayer:exoplayer-dash:2.11.8'
-    api 'com.google.android.exoplayer:exoplayer-hls:2.11.8'
+    // ExoPlayer 2.11.8（与 player 源码中的 HlsErrorHandlingPolicy 完全匹配）
+    api 'com.google.android.exoplayer:exoplayer:2.11.8'
     api 'com.google.android.exoplayer:extension-rtmp:2.11.8'
 
-    // 引入 DKPlayer UI 依赖（提供 box_vod_control_view 所需的 dkplayer_* 资源及 center_container）
-    api 'xyz.doikki.videoplayer:videoplayer-ui:3.3.7'
+    // 引入正确的 DKPlayer UI 库坐标，并排除 videoplayer-java 防止类冲突
+    api('xyz.doikki.android.dkplayer:videoplayer-ui:3.3.5') {
+        exclude group: 'xyz.doikki.android.dkplayer', module: 'videoplayer-java'
+    }
 }
