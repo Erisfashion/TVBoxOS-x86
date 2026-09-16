@@ -3,12 +3,14 @@ package com.github.tvbox.osc.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.github.tvbox.osc.callback.EmptyCallback;
 import com.github.tvbox.osc.callback.LoadingCallback;
 import com.kingja.loadsir.callback.SuccessCallback;
@@ -24,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
-        int layoutResId = getLayoutResId();
+        int layoutResId = getLayoutResID();
         if (layoutResId != 0) {
             setContentView(layoutResId);
         }
@@ -32,20 +34,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         init();
     }
 
-    protected abstract int getLayoutResId();
+    // 注意：项目工程规范使用的是 getLayoutResID()
+    protected abstract int getLayoutResID();
 
     protected abstract void init();
 
-    /**
-     * 屏幕自适应基准：根据宽度进行自适应布局
-     */
     public boolean isBaseOnWidth() {
         return true;
     }
 
-    /**
-     * 绑定 LoadSir 状态页加载服务
-     */
+    public boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public boolean isLoading() {
+        return mLoadService != null && mLoadService.getCurrentCallback() == LoadingCallback.class;
+    }
+
     public void setLoadSir(View targetView) {
         if (targetView != null) {
             mLoadService = LoadSir.getDefault().register(targetView);
@@ -70,9 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Activity 路由跳转辅助方法
-     */
     public void jumpActivity(Class<? extends Activity> targetClass) {
         jumpActivity(targetClass, null);
     }
@@ -93,9 +95,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 全屏控制：兼容 Android 4.2.2 隐藏状态栏与导航栏，并在 Android 4.4+ 上应用沉浸式粘性标志
-     */
     protected void hideSysBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View decorView = getWindow().getDecorView();
