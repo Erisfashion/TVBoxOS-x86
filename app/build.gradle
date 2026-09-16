@@ -48,13 +48,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':player')
 
-    // 1. Android 4.2.2 (Dalvik) 突破 64K 方法限制
+    // 1. Android 4.2.2 (Dalvik) 必须的 MultiDex 支持
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // 2. Java 8 核心语法脱糖支持
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
-    // 3. 现代 TLS 1.2+ 加密引擎
+    // 3. 现代 TLS 1.2+ 加密引擎（解决 Android 4.2 HTTPS 报错）
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
     // 4. 网络请求栈锁定在支持 API 17 的版本
@@ -65,8 +65,8 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
 
-    // 6. 核心 TV 列表库（自带 tv_horizontalSpacingWithMargins 等全部属性）
-    implementation 'com.owen:tv-recyclerview:1.6.0'
+    // 6. 核心 TV 列表库（准确的 JitPack 坐标，自带 tv_horizontalSpacingWithMargins 等全部属性）
+    implementation 'com.github.owenleewho:TvRecyclerView:v1.2.6'
 
     // 7. UI 与基础架构库
     implementation 'androidx.appcompat:appcompat:1.2.0'
