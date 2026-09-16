@@ -19,25 +19,22 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Cache Gradle Packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      # 关键步骤：生成 local.properties 注入 SDK 路径，杜绝 FileNotFound 异常
+      - name: Create local.properties
+        run: |
+          touch local.properties
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
+      # 精确只编译 app 主模块的 Debug APK
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew :app:assembleDebug --stacktrace
 
       - name: Upload Output APK
         uses: actions/upload-artifact@v4
         with:
           name: TVBoxOS-Android4.2.2-x86-Tablet
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/**/*.apk
           retention-days: 7
