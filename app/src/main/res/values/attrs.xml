@@ -50,16 +50,24 @@
         <attr name="topDelta" />
     </declare-styleable>
 
-    <!-- 解决 AAPT 报错的 tv_ 核心属性定义 -->
+    <!-- 全局声明 TvRecyclerView 全套自定义属性，彻底杜绝 AAPT 找不到属性错误 -->
     <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
     <attr name="tv_verticalSpacingWithMargins" format="dimension" />
     <attr name="tv_selectedItemIsCentered" format="boolean" />
+    <attr name="tv_selectedItemOffsetStart" format="dimension" />
+    <attr name="tv_selectedItemOffsetEnd" format="dimension" />
+    <attr name="tv_isMenu" format="boolean" />
+    <attr name="tv_isMemoryFocus" format="boolean" />
     <attr name="tv_layoutManager" format="string" />
 
     <declare-styleable name="TvRecyclerView">
         <attr name="tv_horizontalSpacingWithMargins" />
         <attr name="tv_verticalSpacingWithMargins" />
         <attr name="tv_selectedItemIsCentered" />
+        <attr name="tv_selectedItemOffsetStart" />
+        <attr name="tv_selectedItemOffsetEnd" />
+        <attr name="tv_isMenu" />
+        <attr name="tv_isMemoryFocus" />
         <attr name="tv_layoutManager" />
     </declare-styleable>
 </resources>
