@@ -55,6 +55,7 @@ import com.github.tvbox.osc.cache.CacheManager;
 import com.github.tvbox.osc.dlna.CastVideo;
 import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.player.ExoPlayer;
+import com.github.tvbox.osc.player.IjkMediaPlayer;
 import com.github.tvbox.osc.player.MyVideoView;
 import com.github.tvbox.osc.player.MusicPlaybackService;
 import com.github.tvbox.osc.player.TrackInfo;
@@ -200,6 +201,13 @@ public class PlayFragment extends BaseLazyFragment {
     private LinkedList<String> loadFoundVideoUrls = new LinkedList<>();
     private HashMap<String, HashMap<String, String>> loadFoundVideoUrlsHeader = new HashMap<>();
     private final AtomicInteger loadFoundCount = new AtomicInteger(0);
+
+    private IjkMediaPlayer getAsIjk(AbstractPlayer player) {
+        if (player instanceof IjkMediaPlayer) {
+            return (IjkMediaPlayer) player;
+        }
+        return null;
+    }
 
     @Override
     protected int getLayoutResID() {
