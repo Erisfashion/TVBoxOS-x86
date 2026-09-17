@@ -118,6 +118,11 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        try {
+            // 彻底关闭 AndroidAutoSize 在高分辨率平板上的放大渲染，恢复标准 1:1 比例
+            me.jessyan.autosize.AutoSize.cancelAdapt(this);
+        } catch (Throwable ignored) {}
+        
         EventBus.getDefault().register(this);
         eventBusRegistered = true;
         ControlManager.get().startServer();
