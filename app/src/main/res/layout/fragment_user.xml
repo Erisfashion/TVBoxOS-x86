@@ -5,180 +5,120 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/vs_30"
-        android:paddingTop="@dimen/vs_20"
-        android:paddingEnd="@dimen/vs_30"
-        android:paddingBottom="@dimen/vs_10">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="我的"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_24"
-            android:textStyle="bold" />
-    </LinearLayout>
-
+    <!-- 顶部导航快捷入口栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="@dimen/vs_20"
-        android:paddingEnd="@dimen/vs_20">
+        android:paddingTop="@dimen/vs_15"
+        android:paddingEnd="@dimen/vs_20"
+        android:paddingBottom="@dimen/vs_10">
 
         <!-- 历史记录 -->
-        <LinearLayout
-            android:id="@+id/ll_history"
-            android:layout_width="@dimen/vs_150"
-            android:layout_height="@dimen/vs_100"
-            android:layout_margin="@dimen/vs_10"
+        <TextView
+            android:id="@+id/tvHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vs_40"
+            android:layout_marginEnd="@dimen/vs_15"
             android:background="@drawable/shape_user_focus"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:paddingStart="@dimen/vs_15"
+            android:paddingEnd="@dimen/vs_15"
+            android:text="历史"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_16"
+            app:drawableStartCompat="@drawable/icon_history" />
 
-            <ImageView
-                android:id="@+id/iv_history"
-                android:layout_width="@dimen/vs_40"
-                android:layout_height="@dimen/vs_40"
-                app:srcCompat="@drawable/icon_history" />
-
-            <TextView
-                android:id="@+id/tv_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vs_8"
-                android:text="历史"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/ts_16" />
-        </LinearLayout>
-
-        <!-- 我的收藏 -->
-        <LinearLayout
-            android:id="@+id/ll_collect"
-            android:layout_width="@dimen/vs_150"
-            android:layout_height="@dimen/vs_100"
-            android:layout_margin="@dimen/vs_10"
+        <!-- 收藏 -->
+        <TextView
+            android:id="@+id/tvFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vs_40"
+            android:layout_marginEnd="@dimen/vs_15"
             android:background="@drawable/shape_user_focus"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/iv_collect"
-                android:layout_width="@dimen/vs_40"
-                android:layout_height="@dimen/vs_40"
-                app:srcCompat="@drawable/icon_collect" />
-
-            <TextView
-                android:id="@+id/tv_collect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vs_8"
-                android:text="收藏"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/ts_16" />
-        </LinearLayout>
+            android:paddingStart="@dimen/vs_15"
+            android:paddingEnd="@dimen/vs_15"
+            android:text="收藏"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_16"
+            app:drawableStartCompat="@drawable/icon_collect" />
 
         <!-- 推送 -->
-        <LinearLayout
-            android:id="@+id/ll_push"
-            android:layout_width="@dimen/vs_150"
-            android:layout_height="@dimen/vs_100"
-            android:layout_margin="@dimen/vs_10"
+        <TextView
+            android:id="@+id/tvPush"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vs_40"
+            android:layout_marginEnd="@dimen/vs_15"
             android:background="@drawable/shape_user_focus"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/iv_push"
-                android:layout_width="@dimen/vs_40"
-                android:layout_height="@dimen/vs_40"
-                app:srcCompat="@drawable/icon_push" />
-
-            <TextView
-                android:id="@+id/tv_push"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vs_8"
-                android:text="推送"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/ts_16" />
-        </LinearLayout>
+            android:paddingStart="@dimen/vs_15"
+            android:paddingEnd="@dimen/vs_15"
+            android:text="推送"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_16"
+            app:drawableStartCompat="@drawable/icon_push" />
 
         <!-- 设置 -->
-        <LinearLayout
-            android:id="@+id/ll_setting"
-            android:layout_width="@dimen/vs_150"
-            android:layout_height="@dimen/vs_100"
-            android:layout_margin="@dimen/vs_10"
+        <TextView
+            android:id="@+id/tvSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vs_40"
+            android:layout_marginEnd="@dimen/vs_15"
             android:background="@drawable/shape_user_focus"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:paddingStart="@dimen/vs_15"
+            android:paddingEnd="@dimen/vs_15"
+            android:text="设置"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_16"
+            app:drawableStartCompat="@drawable/icon_setting" />
 
-            <ImageView
-                android:id="@+id/iv_setting"
-                android:layout_width="@dimen/vs_40"
-                android:layout_height="@dimen/vs_40"
-                app:srcCompat="@drawable/icon_setting" />
-
-            <TextView
-                android:id="@+id/tv_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vs_8"
-                android:text="设置"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/ts_16" />
-        </LinearLayout>
-
-        <!-- 直播入口 -->
-        <LinearLayout
-            android:id="@+id/ll_live"
-            android:layout_width="@dimen/vs_150"
-            android:layout_height="@dimen/vs_100"
-            android:layout_margin="@dimen/vs_10"
+        <!-- 直播 -->
+        <TextView
+            android:id="@+id/tvLive"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vs_40"
+            android:layout_marginEnd="@dimen/vs_15"
             android:background="@drawable/shape_user_focus"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/iv_live"
-                android:layout_width="@dimen/vs_40"
-                android:layout_height="@dimen/vs_40"
-                app:srcCompat="@drawable/icon_live" />
-
-            <TextView
-                android:id="@+id/tv_live"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vs_8"
-                android:text="直播"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/ts_16" />
-        </LinearLayout>
+            android:paddingStart="@dimen/vs_15"
+            android:paddingEnd="@dimen/vs_15"
+            android:text="直播"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_16"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/icon_live" />
     </LinearLayout>
 
-    <!-- 底部热播与历史流列表 -->
+    <!-- 热播 / 列表标题 -->
+    <TextView
+        android:id="@+id/tvHotList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/vs_20"
+        android:paddingTop="@dimen/vs_5"
+        android:paddingBottom="@dimen/vs_5"
+        android:text="热门推荐"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/ts_18" />
+
+    <!-- 底部网格数据流 -->
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/mGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/vs_10"
         android:paddingStart="@dimen/vs_20"
         android:paddingEnd="@dimen/vs_20" />
 
