@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- 应用全局主主题：无标题栏、全屏沉浸、深色壁纸底色 -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -10,4 +12,17 @@
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#E50914</item>
     </style>
+
+    <!-- 补齐直播与EPG节目单按钮样式 -->
+    <style name="epg_window_btn">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/ts_24</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/shape_user_focus</item>
+    </style>
+
 </resources>
