@@ -640,6 +640,15 @@ public class HomeActivity extends BaseActivity {
         if (!mSiteSwitchDialog.isShowing()) mSiteSwitchDialog.show();
     }
 
+    private void dismissSiteSwitchDialog() {
+        if (mSiteSwitchDialog != null) {
+            if (mSiteSwitchDialog.isShowing()) {
+                mSiteSwitchDialog.dismiss();
+            }
+            mSiteSwitchDialog = null;
+        }
+    }
+
     private void refreshHome() {
         refreshHome(true);
     }
@@ -688,10 +697,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void dismissHomeDialogs() {
-        if (mSiteSwitchDialog != null && mSiteSwitchDialog.isShowing()) {
-            mSiteSwitchDialog.dismiss();
-            mSiteSwitchDialog = null;
-        }
+        dismissSiteSwitchDialog();
     }
 
     private void refreshEmpty() {
