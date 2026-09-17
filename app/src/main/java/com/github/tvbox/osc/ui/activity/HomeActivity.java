@@ -277,29 +277,37 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
-                if(dataInitOk && jarInitOk){
-                    String jar=ApiConfig.get().getHomeSourceBean().getJar();
-                    String jarUrl=!jar.isEmpty()?jar:ApiConfig.get().getSpider();
-                    String jarSource = jarUrl.split(";md5;")[0];
-                    File cspCacheDir = new File(FileUtils.getFilePath() + "/csp/" + MD5.string2MD5(jarSource) + ".jar");
-                    File jarCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarSource) + ".jar");
-                    File jarFullCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarUrl) + ".jar");
-                    Toast.makeText(mContext, "缓存已清除", Toast.LENGTH_LONG).show();
-                    new Thread(() -> {
-                        try {
-                            FileUtils.deleteFile(cspCacheDir);
-                            FileUtils.deleteFile(jarCacheDir);
-                            FileUtils.deleteFile(jarFullCacheDir);
-                            FileUtils.clearSpiderCacheFiles();
-                            ApiConfig.get().clearSpiderCache();
-                            refreshHome();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if (dataInitOk && jarInitOk) {
+                    try {
+                        com.github.tvbox.osc.bean.SourceBean sourceBean = ApiConfig.get().getHomeSourceBean();
+                        if (sourceBean != null) {
+                            String jar = sourceBean.getJar();
+                            String spider = ApiConfig.get().getSpider();
+                            String jarUrl = (jar != null && !jar.isEmpty()) ? jar : (spider != null ? spider : "");
+                            if (!jarUrl.isEmpty()) {
+                                String jarSource = jarUrl.split(";md5;")[0];
+                                File cspCacheDir = new File(FileUtils.getFilePath() + "/csp/" + MD5.string2MD5(jarSource) + ".jar");
+                                File jarCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarSource) + ".jar");
+                                File jarFullCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarUrl) + ".jar");
+                                
+                                new Thread(() -> {
+                                    try {
+                                        FileUtils.deleteFile(cspCacheDir);
+                                        FileUtils.deleteFile(jarCacheDir);
+                                        FileUtils.deleteFile(jarFullCacheDir);
+                                        FileUtils.clearSpiderCacheFiles();
+                                        ApiConfig.get().clearSpiderCache();
+                                        refreshHome();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }).start();
+                            }
                         }
-                    }).start();
-
-                }else {
-                    jumpActivity(SettingActivity.class);
+                        Toast.makeText(mContext, "缓存已检查/清除", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
