@@ -1,10 +1,6 @@
 package com.github.tvbox.osc.ui.activity;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.IntEvaluator;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +10,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,13 +42,11 @@ import com.github.tvbox.osc.ui.fragment.UserFragment;
 import com.github.tvbox.osc.ui.tv.widget.DefaultTransformer;
 import com.github.tvbox.osc.ui.tv.widget.FixedSpeedScroller;
 import com.github.tvbox.osc.ui.tv.widget.NoScrollViewPager;
-import com.github.tvbox.osc.ui.tv.widget.ViewObj;
 import com.github.tvbox.osc.util.AppManager;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.util.HawkConfig;
-import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.orhanobut.hawk.Hawk;
@@ -113,32 +104,6 @@ public class HomeActivity extends BaseActivity {
         }
     };
 
-    private final Runnable refreshTopInfoTextSizeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            refreshTopInfoTextSize();
-        }
-    };
-
-    private final Runnable refreshTopLayoutRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (topLayout == null || isActivityUnavailable() || currentSelected != 0 || topHide != 0) {
-                return;
-            }
-            hideSysBar();
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
-            if (params != null) {
-                params.topMargin = getResources().getDimensionPixelSize(R.dimen.vs_10);
-                params.height = getResources().getDimensionPixelSize(R.dimen.vs_50);
-                topLayout.setLayoutParams(params);
-            }
-            topLayout.setAlpha(1.0f);
-            refreshTopInfoTextSize();
-            topLayout.requestLayout();
-        }
-    };
-
     @Override
     protected int getLayoutResID() {
         return R.layout.activity_home;
@@ -193,28 +158,21 @@ public class HomeActivity extends BaseActivity {
         this.mGridView.setOnItemListener(new TvRecyclerView.OnItemListener() {
             public void onItemPreSelected(TvRecyclerView tvRecyclerView, View view, int position) {
                 if (view != null && !HomeActivity.this.isDownOrUp) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView textView = view.findViewById(R.id.tvTitle);
-                            if (textView != null) {
-                                textView.getPaint().setFakeBoldText(false);
-                                if (sortFocused == p) {
-                                    view.animate().scaleX(1.1f).scaleY(1.1f).setInterpolator(new BounceInterpolator()).setDuration(300).start();
-                                    textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
-                                } else {
-                                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
-                                    textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_BBFFFFFF));
-                                    View f1 = view.findViewById(R.id.tvFilter);
-                                    View f2 = view.findViewById(R.id.tvFilterColor);
-                                    if (f1 != null) f1.setVisibility(View.GONE);
-                                    if (f2 != null) f2.setVisibility(View.GONE);
-                                }
-                                textView.invalidate();
+                    mHandler.postDelayed(() -> {
+                        TextView textView = view.findViewById(R.id.tvTitle);
+                        if (textView != null) {
+                            textView.getPaint().setFakeBoldText(false);
+                            if (sortFocused == position) {
+                                textView.setTextColor(getResources().getColor(R.color.color_FFFFFF));
+                            } else {
+                                textView.setTextColor(getResources().getColor(R.color.color_BBFFFFFF));
+                                View f1 = view.findViewById(R.id.tvFilter);
+                                View f2 = view.findViewById(R.id.tvFilterColor);
+                                if (f1 != null) f1.setVisibility(View.GONE);
+                                if (f2 != null) f2.setVisibility(View.GONE);
                             }
+                            textView.invalidate();
                         }
-
-                        public final int p = position;
                     }, 10);
                 }
             }
@@ -224,11 +182,10 @@ public class HomeActivity extends BaseActivity {
                     HomeActivity.this.currentView = view;
                     HomeActivity.this.isDownOrUp = false;
                     HomeActivity.this.sortChange = true;
-                    view.animate().scaleX(1.1f).scaleY(1.1f).setInterpolator(new BounceInterpolator()).setDuration(300).start();
                     TextView textView = view.findViewById(R.id.tvTitle);
                     if (textView != null) {
                         textView.getPaint().setFakeBoldText(true);
-                        textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
+                        textView.setTextColor(getResources().getColor(R.color.color_FFFFFF));
                         textView.invalidate();
                     }
                     if (sortAdapter.getData().size() > position) {
@@ -259,80 +216,72 @@ public class HomeActivity extends BaseActivity {
             }
         });
 
-        this.mGridView.setOnInBorderKeyEventListener(new TvRecyclerView.OnInBorderKeyEventListener() {
-            public boolean onInBorderKeyEvent(int direction, View view) {
-                if (direction == View.FOCUS_UP) {
-                    if (fragments.size() > sortFocused) {
-                        BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
-                        if (baseLazyFragment instanceof UserFragment) {
-                            refreshHomeSort();
-                            return true;
-                        }
-                        if (baseLazyFragment instanceof GridFragment) {
-                            ((GridFragment) baseLazyFragment).forceRefresh();
-                            return true;
-                        }
-                    }
-                }
-                if (direction != View.FOCUS_DOWN) {
-                    return false;
-                }
+        this.mGridView.setOnInBorderKeyEventListener((direction, view) -> {
+            if (direction == View.FOCUS_UP) {
                 if (fragments.size() > sortFocused) {
                     BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
-                    if (!(baseLazyFragment instanceof GridFragment)) {
-                        return false;
+                    if (baseLazyFragment instanceof UserFragment) {
+                        refreshHomeSort();
+                        return true;
                     }
-                    return !((GridFragment) baseLazyFragment).isLoad();
+                    if (baseLazyFragment instanceof GridFragment) {
+                        ((GridFragment) baseLazyFragment).forceRefresh();
+                        return true;
+                    }
                 }
+            }
+            if (direction != View.FOCUS_DOWN) {
                 return false;
             }
+            if (fragments.size() > sortFocused) {
+                BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
+                if (!(baseLazyFragment instanceof GridFragment)) {
+                    return false;
+                }
+                return !((GridFragment) baseLazyFragment).isLoad();
+            }
+            return false;
         });
 
-        tvName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FastClickCheckUtil.check(v);
-                if (dataInitOk && jarInitOk) {
-                    try {
-                        SourceBean sourceBean = ApiConfig.get().getHomeSourceBean();
-                        if (sourceBean != null) {
-                            String jar = sourceBean.getJar();
-                            String spider = ApiConfig.get().getSpider();
-                            String jarUrl = (jar != null && !jar.isEmpty()) ? jar : (spider != null ? spider : "");
-                            if (!jarUrl.isEmpty()) {
-                                String jarSource = jarUrl.split(";md5;")[0];
-                                File cspCacheDir = new File(FileUtils.getFilePath() + "/csp/" + MD5.string2MD5(jarSource) + ".jar");
-                                File jarCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarSource) + ".jar");
-                                File jarFullCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarUrl) + ".jar");
+        tvName.setOnClickListener(v -> {
+            FastClickCheckUtil.check(v);
+            if (dataInitOk && jarInitOk) {
+                try {
+                    SourceBean sourceBean = ApiConfig.get().getHomeSourceBean();
+                    if (sourceBean != null) {
+                        String jar = sourceBean.getJar();
+                        String spider = ApiConfig.get().getSpider();
+                        String jarUrl = (jar != null && !jar.isEmpty()) ? jar : (spider != null ? spider : "");
+                        if (!jarUrl.isEmpty()) {
+                            String jarSource = jarUrl.split(";md5;")[0];
+                            File cspCacheDir = new File(FileUtils.getFilePath() + "/csp/" + MD5.string2MD5(jarSource) + ".jar");
+                            File jarCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarSource) + ".jar");
+                            File jarFullCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarUrl) + ".jar");
 
-                                new Thread(() -> {
-                                    try {
-                                        FileUtils.deleteFile(cspCacheDir);
-                                        FileUtils.deleteFile(jarCacheDir);
-                                        FileUtils.deleteFile(jarFullCacheDir);
-                                        FileUtils.clearSpiderCacheFiles();
-                                        ApiConfig.get().clearSpiderCache();
-                                        refreshHome();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }).start();
-                            }
+                            new Thread(() -> {
+                                try {
+                                    FileUtils.deleteFile(cspCacheDir);
+                                    FileUtils.deleteFile(jarCacheDir);
+                                    FileUtils.deleteFile(jarFullCacheDir);
+                                    FileUtils.clearSpiderCacheFiles();
+                                    ApiConfig.get().clearSpiderCache();
+                                    refreshHome();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
                         }
-                        Toast.makeText(mContext, "缓存已检查/清除", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                    Toast.makeText(mContext, "缓存已检查/清除", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        tvName.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                jumpActivity(SettingActivity.class);
-                return true;
-            }
+        tvName.setOnLongClickListener(v -> {
+            jumpActivity(SettingActivity.class);
+            return true;
         });
         setLoadSir(this.contentLayout);
     }
@@ -346,9 +295,6 @@ public class HomeActivity extends BaseActivity {
             public void onChanged(AbsSortXml absXml) {
                 if (skipNextUpdate) {
                     skipNextUpdate = false;
-                    return;
-                }
-                if (absXml != null && absXml.sourceKey != null && loadingSourceKey != null && !loadingSourceKey.equals(absXml.sourceKey)) {
                     return;
                 }
                 SourceBean home = ApiConfig.get().getHomeSourceBean();
@@ -369,11 +315,8 @@ public class HomeActivity extends BaseActivity {
                 } else {
                     tvName.setText(R.string.app_name);
                 }
-                tvName.clearAnimation();
                 homeSortLoading = false;
                 loadingSourceKey = null;
-                previousHomeName = null;
-                previousHomeSource = null;
             }
         });
     }
@@ -381,9 +324,15 @@ public class HomeActivity extends BaseActivity {
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
     private boolean searchSpiderWarmStarted = false;
-    private TipDialog mConfigErrorDialog;
 
     private void initData() {
+        SourceBean home = ApiConfig.get().getHomeSourceBean();
+        if (home == null) {
+            dataInitOk = true;
+            jarInitOk = true;
+            refreshEmpty();
+            return;
+        }
         if (dataInitOk && jarInitOk) {
             loadHomeSort(false);
             if (!useCacheConfig && Hawk.get(HawkConfig.DEFAULT_LOAD_LIVE, false)) {
@@ -392,110 +341,24 @@ public class HomeActivity extends BaseActivity {
             if (!useCacheConfig) warmSearchSpidersOnce();
             return;
         }
-        tvNameAnimation();
         showLoading();
-        if (dataInitOk && !jarInitOk) {
-            if (!ApiConfig.get().getSpider().isEmpty()) {
-                ApiConfig.get().loadJar(useCacheConfig, ApiConfig.get().getSpider(), new ApiConfig.LoadConfigCallback() {
-                    @Override
-                    public void success() {
-                        jarInitOk = true;
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                initData();
-                            }
-                        }, 50);
-                    }
-
-                    @Override
-                    public void notice(String msg) {
-                        mHandler.post(() -> Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show());
-                    }
-
-                    @Override
-                    public void error(String msg) {
-                        jarInitOk = true;
-                        dataInitOk = true;
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(HomeActivity.this, msg + " jar load err", Toast.LENGTH_SHORT).show();
-                                initData();
-                            }
-                        }, 50);
-                    }
-                });
-            } else {
-                jarInitOk = true;
-                initData();
-            }
-            return;
-        }
         ApiConfig.get().loadConfig(useCacheConfig, new ApiConfig.LoadConfigCallback() {
             @Override
-            public void notice(String msg) {
-                mHandler.post(() -> Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show());
-            }
+            public void notice(String msg) {}
 
             @Override
             public void success() {
                 dataInitOk = true;
-                if (ApiConfig.get().getSpider().isEmpty()) {
-                    jarInitOk = true;
-                }
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        initData();
-                    }
-                }, 50);
+                jarInitOk = true;
+                mHandler.post(() -> initData());
             }
 
             @Override
             public void error(String msg) {
-                if (msg != null && msg.equalsIgnoreCase("-1")) {
-                    mHandler.post(() -> {
-                        dataInitOk = true;
-                        jarInitOk = true;
-                        initData();
-                    });
-                    return;
-                }
                 mHandler.post(() -> {
-                    if (isActivityUnavailable()) return;
-                    if (mConfigErrorDialog == null) {
-                        mConfigErrorDialog = new TipDialog(HomeActivity.this, msg, "重试", "取消", new TipDialog.OnListener() {
-                            @Override
-                            public void left() {
-                                mHandler.post(() -> {
-                                    dismissConfigErrorDialog();
-                                    initData();
-                                });
-                            }
-
-                            @Override
-                            public void right() {
-                                dataInitOk = true;
-                                jarInitOk = true;
-                                mHandler.post(() -> {
-                                    dismissConfigErrorDialog();
-                                    initData();
-                                });
-                            }
-
-                            @Override
-                            public void cancel() {
-                                dataInitOk = true;
-                                jarInitOk = true;
-                                mHandler.post(() -> {
-                                    dismissConfigErrorDialog();
-                                    initData();
-                                });
-                            }
-                        });
-                    }
-                    if (!mConfigErrorDialog.isShowing()) mConfigErrorDialog.show();
+                    dataInitOk = true;
+                    jarInitOk = true;
+                    refreshEmpty();
                 });
             }
         }, this);
@@ -510,15 +373,8 @@ public class HomeActivity extends BaseActivity {
     private void loadHomeSort(boolean keepCurrentContent) {
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         homeSortLoading = keepCurrentContent;
-        if (keepCurrentContent && home != null && home.getName() != null && !home.getName().isEmpty()) {
-            previousHomeName = tvName.getText() == null ? null : tvName.getText().toString();
-            tvName.setText(home.getName());
-        }
-        tvNameAnimation();
         if (home == null) {
-            loadingSourceKey = null;
-            if (!keepCurrentContent) showLoading();
-            sourceViewModel.getSort(null);
+            refreshEmpty();
             return;
         }
         loadingSourceKey = home.getKey();
@@ -549,8 +405,7 @@ public class HomeActivity extends BaseActivity {
                 FixedSpeedScroller scroller = new FixedSpeedScroller(mContext, new AccelerateInterpolator());
                 field.set(mViewPager, scroller);
                 scroller.setmDuration(300);
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             mViewPager.setPageTransformer(true, new DefaultTransformer());
             mViewPager.setAdapter(pageAdapter);
             mViewPager.setCurrentItem(currentSelected, false);
@@ -576,43 +431,14 @@ public class HomeActivity extends BaseActivity {
         if (newSortData == null) {
             newSortData = new ArrayList<>();
         }
-        List<MovieSort.SortData> oldSortData = sortAdapter.getData();
-        if (oldSortData.isEmpty()
-                || newSortData.isEmpty()
-                || oldSortData.get(0) == null
-                || newSortData.get(0) == null
-                || !"my0".equals(oldSortData.get(0).id)
-                || !"my0".equals(newSortData.get(0).id)) {
-            sortAdapter.setNewData(newSortData);
-            return;
-        }
-        int oldTailCount = oldSortData.size() - 1;
-        if (oldTailCount > 0) {
-            oldSortData.subList(1, oldSortData.size()).clear();
-            sortAdapter.notifyItemRangeRemoved(1, oldTailCount);
-        }
-        if (newSortData.size() > 1) {
-            oldSortData.addAll(newSortData.subList(1, newSortData.size()));
-            sortAdapter.notifyItemRangeInserted(1, newSortData.size() - 1);
-        }
+        sortAdapter.setNewData(newSortData);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBackPressed() {
-        if (homeSortLoading) {
-            cancelHomeSortLoading();
-            return;
-        }
         if (isLoading()) {
             refreshEmpty();
-            return;
-        }
-        if (HawkConfig.hotVodDelete) {
-            HawkConfig.hotVodDelete = false;
-            if (UserFragment.homeHotVodAdapter != null) {
-                UserFragment.homeHotVodAdapter.notifyDataSetChanged();
-            }
             return;
         }
         if (this.fragments.size() <= 0 || this.sortFocused >= this.fragments.size() || this.sortFocused < 0) {
@@ -622,19 +448,12 @@ public class HomeActivity extends BaseActivity {
         BaseLazyFragment baseLazyFragment = this.fragments.get(this.sortFocused);
         if (baseLazyFragment instanceof GridFragment) {
             GridFragment grid = (GridFragment) baseLazyFragment;
-            if (grid.restoreView()) {
-                return;
-            }
-            if (this.sortFocusView != null && !this.sortFocusView.isFocused()) {
-                this.sortFocusView.requestFocus();
-            } else if (this.sortFocused != 0) {
+            if (grid.restoreView()) return;
+            if (this.sortFocused != 0) {
                 this.mGridView.setSelection(0);
             } else {
                 doExit();
             }
-        } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotList != null && UserFragment.tvHotList.canScrollVertically(-1)) {
-            UserFragment.tvHotList.scrollToPosition(0);
-            this.mGridView.setSelection(0);
         } else {
             doExit();
         }
@@ -657,26 +476,22 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (topLayout != null) {
+            topLayout.setVisibility(View.VISIBLE);
+            topLayout.setAlpha(1.0f);
+        }
         refreshTopInfoTextSize();
-        mHandler.removeCallbacks(refreshTopInfoTextSizeRunnable);
-        mHandler.postDelayed(refreshTopInfoTextSizeRunnable, 350);
-        mHandler.removeCallbacks(refreshTopLayoutRunnable);
-        mHandler.postDelayed(refreshTopLayoutRunnable, 450);
         mHandler.post(mRunnable);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(refreshTopInfoTextSizeRunnable);
-        mHandler.removeCallbacks(refreshTopLayoutRunnable);
         mHandler.removeCallbacks(mRunnable);
     }
 
     private void refreshTopInfoTextSize() {
-        if (tvName == null || tvDate == null) {
-            return;
-        }
+        if (tvName == null || tvDate == null) return;
         tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.ts_30));
         tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.ts_26));
     }
@@ -737,7 +552,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (topHide < 0) return false;
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -754,50 +568,11 @@ public class HomeActivity extends BaseActivity {
         return super.dispatchKeyEvent(event);
     }
 
-    byte topHide = 0;
-
     private void changeTop(boolean hide) {
         if (topLayout == null) return;
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
-        if (lp == null) return;
-
-        int marginNormal = getResources().getDimensionPixelSize(R.dimen.vs_10);
-        int heightNormal = getResources().getDimensionPixelSize(R.dimen.vs_50);
-
-        ViewObj viewObj = new ViewObj(topLayout, lp);
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                topHide = (byte) (hide ? 1 : 0);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
-
-        if (hide && topHide == 0) {
-            animatorSet.playTogether(
-                    ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(), marginNormal, 0),
-                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(), heightNormal, 1),
-                    ObjectAnimator.ofFloat(this.topLayout, "alpha", 1.0f, 0.0f));
-            animatorSet.setDuration(200);
-            animatorSet.start();
-            return;
-        }
-        if (!hide && topHide == 1) {
-            animatorSet.playTogether(
-                    ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(), 0, marginNormal),
-                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(), 1, heightNormal),
-                    ObjectAnimator.ofFloat(this.topLayout, "alpha", 0.0f, 1.0f));
-            animatorSet.setDuration(200);
-            animatorSet.start();
+        if (!hide) {
+            topLayout.setVisibility(View.VISIBLE);
+            topLayout.setAlpha(1.0f);
         }
     }
 
@@ -894,9 +669,7 @@ public class HomeActivity extends BaseActivity {
             mHandler.post(() -> refreshHome(restart));
             return;
         }
-        if (isActivityUnavailable()) {
-            return;
-        }
+        if (isActivityUnavailable()) return;
         dismissHomeDialogs();
         if (!restart) {
             loadHomeSort(true);
@@ -915,24 +688,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void dismissHomeDialogs() {
-        dismissConfigErrorDialog();
-        dismissSiteSwitchDialog();
-    }
-
-    private void dismissConfigErrorDialog() {
-        if (mConfigErrorDialog != null) {
-            if (mConfigErrorDialog.isShowing()) {
-                mConfigErrorDialog.dismiss();
-            }
-            mConfigErrorDialog = null;
-        }
-    }
-
-    private void dismissSiteSwitchDialog() {
-        if (mSiteSwitchDialog != null) {
-            if (mSiteSwitchDialog.isShowing()) {
-                mSiteSwitchDialog.dismiss();
-            }
+        if (mSiteSwitchDialog != null && mSiteSwitchDialog.isShowing()) {
+            mSiteSwitchDialog.dismiss();
             mSiteSwitchDialog = null;
         }
     }
@@ -940,36 +697,19 @@ public class HomeActivity extends BaseActivity {
     private void refreshEmpty() {
         skipNextUpdate = true;
         showSuccess();
-        cancelHomeSortLoading();
         clearHomePages();
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         String homeKey = home != null ? home.getKey() : "";
         sortAdapter.setNewData(DefaultConfig.adjustSort(homeKey, new ArrayList<>(), true));
         initViewPager(null);
-        tvName.clearAnimation();
-    }
-
-    private void cancelHomeSortLoading() {
-        homeSortLoading = false;
-        loadingSourceKey = null;
-        tvName.clearAnimation();
-        if (previousHomeSource != null) {
-            ApiConfig.get().setSourceBean(previousHomeSource);
+        if (tvName != null) {
+            tvName.setText(R.string.app_name);
+            tvName.clearAnimation();
+            tvName.setAlpha(1.0f);
         }
-        if (previousHomeName != null && !previousHomeName.isEmpty()) {
-            tvName.setText(previousHomeName);
+        if (topLayout != null) {
+            topLayout.setVisibility(View.VISIBLE);
+            topLayout.setAlpha(1.0f);
         }
-        previousHomeSource = null;
-        previousHomeName = null;
-    }
-
-    private void tvNameAnimation() {
-        tvName.clearAnimation();
-        AlphaAnimation blinkAnimation = new AlphaAnimation(0.0f, 1.0f);
-        blinkAnimation.setDuration(500);
-        blinkAnimation.setStartOffset(20);
-        blinkAnimation.setRepeatMode(Animation.REVERSE);
-        blinkAnimation.setRepeatCount(Animation.INFINITE);
-        tvName.startAnimation(blinkAnimation);
     }
 }
