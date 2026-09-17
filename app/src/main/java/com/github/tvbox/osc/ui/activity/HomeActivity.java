@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,7 +66,6 @@ import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -77,8 +75,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class HomeActivity extends BaseActivity {
     private LinearLayout topLayout;
@@ -105,35 +101,38 @@ public class HomeActivity extends BaseActivity {
     private final Handler mHandler = new Handler();
     private long mExitTime = 0;
     private boolean eventBusRegistered = false;
+
     private final Runnable mRunnable = new Runnable() {
         @SuppressLint("SetTextI18n")
         @Override
         public void run() {
             Date date = new Date();
             SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd  E  HH:mm", Locale.CHINA);
-            tvDate.setText(timeFormat.format(date));
+            if (tvDate != null) tvDate.setText(timeFormat.format(date));
             mHandler.postDelayed(this, 1000);
         }
     };
+
     private final Runnable refreshTopInfoTextSizeRunnable = new Runnable() {
         @Override
         public void run() {
             refreshTopInfoTextSize();
         }
     };
+
     private final Runnable refreshTopLayoutRunnable = new Runnable() {
         @Override
         public void run() {
             if (topLayout == null || isActivityUnavailable() || currentSelected != 0 || topHide != 0) {
                 return;
             }
-            // OnePlus devices may finish applying immersive mode after the first measure.
-            // Re-apply the visible top state once the final display metrics are available.
             hideSysBar();
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
-            params.topMargin = AutoSizeUtils.mm2px(HomeActivity.this, 10.0f);
-            params.height = AutoSizeUtils.mm2px(HomeActivity.this, 50.0f);
-            topLayout.setLayoutParams(params);
+            if (params != null) {
+                params.topMargin = getResources().getDimensionPixelSize(R.dimen.vs_10);
+                params.height = getResources().getDimensionPixelSize(R.dimen.vs_50);
+                topLayout.setLayoutParams(params);
+            }
             topLayout.setAlpha(1.0f);
             refreshTopInfoTextSize();
             topLayout.requestLayout();
@@ -147,7 +146,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected boolean shouldRefreshAutoSize() {
-        return true;
+        return false;
     }
 
     boolean useCacheConfig = false;
@@ -177,7 +176,7 @@ public class HomeActivity extends BaseActivity {
         this.mViewPager = findViewById(R.id.mViewPager);
         this.sortAdapter = new SortAdapter();
         this.mGridView.setLayoutManager(new V7LinearLayoutManager(this.mContext, 0, false));
-        this.mGridView.setSpacingWithMargins(0, AutoSizeUtils.dp2px(this.mContext, 10.0f));
+        this.mGridView.setSpacingWithMargins(0, getResources().getDimensionPixelSize(R.dimen.vs_10));
         this.mGridView.setAdapter(this.sortAdapter);
         sortAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -198,17 +197,21 @@ public class HomeActivity extends BaseActivity {
                         @Override
                         public void run() {
                             TextView textView = view.findViewById(R.id.tvTitle);
-                            textView.getPaint().setFakeBoldText(false);
-                            if (sortFocused == p) {
-                                view.animate().scaleX(1.1f).scaleY(1.1f).setInterpolator(new BounceInterpolator()).setDuration(300).start();
-                                textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
-                            } else {
-                                view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
-                                textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_BBFFFFFF));
-                                view.findViewById(R.id.tvFilter).setVisibility(View.GONE);
-                                view.findViewById(R.id.tvFilterColor).setVisibility(View.GONE);
+                            if (textView != null) {
+                                textView.getPaint().setFakeBoldText(false);
+                                if (sortFocused == p) {
+                                    view.animate().scaleX(1.1f).scaleY(1.1f).setInterpolator(new BounceInterpolator()).setDuration(300).start();
+                                    textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
+                                } else {
+                                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
+                                    textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_BBFFFFFF));
+                                    View f1 = view.findViewById(R.id.tvFilter);
+                                    View f2 = view.findViewById(R.id.tvFilterColor);
+                                    if (f1 != null) f1.setVisibility(View.GONE);
+                                    if (f2 != null) f2.setVisibility(View.GONE);
+                                }
+                                textView.invalidate();
                             }
-                            textView.invalidate();
                         }
 
                         public final int p = position;
@@ -223,12 +226,16 @@ public class HomeActivity extends BaseActivity {
                     HomeActivity.this.sortChange = true;
                     view.animate().scaleX(1.1f).scaleY(1.1f).setInterpolator(new BounceInterpolator()).setDuration(300).start();
                     TextView textView = view.findViewById(R.id.tvTitle);
-                    textView.getPaint().setFakeBoldText(true);
-                    textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
-                    textView.invalidate();
-                    MovieSort.SortData sortData = sortAdapter.getItem(position);
-                    if (!sortData.filters.isEmpty()) {
-                        showFilterIcon(sortData.filterSelectCount());
+                    if (textView != null) {
+                        textView.getPaint().setFakeBoldText(true);
+                        textView.setTextColor(HomeActivity.this.getResources().getColor(R.color.color_FFFFFF));
+                        textView.invalidate();
+                    }
+                    if (sortAdapter.getData().size() > position) {
+                        MovieSort.SortData sortData = sortAdapter.getItem(position);
+                        if (sortData != null && !sortData.filters.isEmpty()) {
+                            showFilterIcon(sortData.filterSelectCount());
+                        }
                     }
                     HomeActivity.this.sortFocusView = view;
                     HomeActivity.this.sortFocused = position;
@@ -240,11 +247,13 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
                 if (itemView != null && currentSelected == position) {
-                    BaseLazyFragment baseLazyFragment = fragments.get(currentSelected);
-                    if ((baseLazyFragment instanceof GridFragment) && !sortAdapter.getItem(position).filters.isEmpty()) {// 弹出筛选
-                        ((GridFragment) baseLazyFragment).showFilter();
-                    } else if (baseLazyFragment instanceof UserFragment) {
-                        showSiteSwitch();
+                    if (fragments.size() > currentSelected) {
+                        BaseLazyFragment baseLazyFragment = fragments.get(currentSelected);
+                        if ((baseLazyFragment instanceof GridFragment) && !sortAdapter.getItem(position).filters.isEmpty()) {
+                            ((GridFragment) baseLazyFragment).showFilter();
+                        } else if (baseLazyFragment instanceof UserFragment) {
+                            showSiteSwitch();
+                        }
                     }
                 }
             }
@@ -253,33 +262,39 @@ public class HomeActivity extends BaseActivity {
         this.mGridView.setOnInBorderKeyEventListener(new TvRecyclerView.OnInBorderKeyEventListener() {
             public boolean onInBorderKeyEvent(int direction, View view) {
                 if (direction == View.FOCUS_UP) {
-                    BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
-                    if (baseLazyFragment instanceof UserFragment) {
-                        refreshHomeSort();
-                        return true;
-                    }
-                    if (baseLazyFragment instanceof GridFragment) {
-                        ((GridFragment) baseLazyFragment).forceRefresh();
-                        return true;
+                    if (fragments.size() > sortFocused) {
+                        BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
+                        if (baseLazyFragment instanceof UserFragment) {
+                            refreshHomeSort();
+                            return true;
+                        }
+                        if (baseLazyFragment instanceof GridFragment) {
+                            ((GridFragment) baseLazyFragment).forceRefresh();
+                            return true;
+                        }
                     }
                 }
                 if (direction != View.FOCUS_DOWN) {
                     return false;
                 }
-                BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
-                if (!(baseLazyFragment instanceof GridFragment)) {
-                    return false;
+                if (fragments.size() > sortFocused) {
+                    BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
+                    if (!(baseLazyFragment instanceof GridFragment)) {
+                        return false;
+                    }
+                    return !((GridFragment) baseLazyFragment).isLoad();
                 }
-                return !((GridFragment) baseLazyFragment).isLoad();
+                return false;
             }
         });
+
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
                 if (dataInitOk && jarInitOk) {
                     try {
-                        com.github.tvbox.osc.bean.SourceBean sourceBean = ApiConfig.get().getHomeSourceBean();
+                        SourceBean sourceBean = ApiConfig.get().getHomeSourceBean();
                         if (sourceBean != null) {
                             String jar = sourceBean.getJar();
                             String spider = ApiConfig.get().getSpider();
@@ -289,7 +304,7 @@ public class HomeActivity extends BaseActivity {
                                 File cspCacheDir = new File(FileUtils.getFilePath() + "/csp/" + MD5.string2MD5(jarSource) + ".jar");
                                 File jarCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarSource) + ".jar");
                                 File jarFullCacheDir = new File(FileUtils.getCachePath() + "/jar/" + MD5.string2MD5(jarUrl) + ".jar");
-                                
+
                                 new Thread(() -> {
                                     try {
                                         FileUtils.deleteFile(cspCacheDir);
@@ -311,6 +326,7 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+
         tvName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -319,9 +335,7 @@ public class HomeActivity extends BaseActivity {
             }
         });
         setLoadSir(this.contentLayout);
-        //mHandler.postDelayed(mFindFocus, 500);
     }
-
 
     private boolean skipNextUpdate = false;
 
@@ -334,25 +348,27 @@ public class HomeActivity extends BaseActivity {
                     skipNextUpdate = false;
                     return;
                 }
-                if (!homeSortLoading && loadingSourceKey == null) {
-                    return;
-                }
                 if (absXml != null && absXml.sourceKey != null && loadingSourceKey != null && !loadingSourceKey.equals(absXml.sourceKey)) {
                     return;
                 }
                 SourceBean home = ApiConfig.get().getHomeSourceBean();
+                String homeKey = home != null ? home.getKey() : "";
                 showSuccess();
                 clearHomePages();
                 List<MovieSort.SortData> newSortData;
                 if (absXml != null && absXml.classes != null && absXml.classes.sortList != null) {
-                    newSortData = DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), absXml.classes.sortList, true);
+                    newSortData = DefaultConfig.adjustSort(homeKey, absXml.classes.sortList, true);
                 } else {
-                    newSortData = DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), new ArrayList<>(), true);
+                    newSortData = DefaultConfig.adjustSort(homeKey, new ArrayList<>(), true);
                 }
                 updateSortData(newSortData);
                 initViewPager(absXml);
                 updateHomeRec(absXml);
-                if (home != null && home.getName() != null && !home.getName().isEmpty()) tvName.setText(home.getName());
+                if (home != null && home.getName() != null && !home.getName().isEmpty()) {
+                    tvName.setText(home.getName());
+                } else {
+                    tvName.setText(R.string.app_name);
+                }
                 tvName.clearAnimation();
                 homeSortLoading = false;
                 loadingSourceKey = null;
@@ -370,16 +386,10 @@ public class HomeActivity extends BaseActivity {
     private void initData() {
         if (dataInitOk && jarInitOk) {
             loadHomeSort(false);
-            if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                LOG.e("有");
-            } else {
-                LOG.e("无");
-            }
             if (!useCacheConfig && Hawk.get(HawkConfig.DEFAULT_LOAD_LIVE, false)) {
                 jumpActivity(LivePlayActivity.class);
             }
-            //爬虫预热 仅首次加载
-            if(!useCacheConfig)warmSearchSpidersOnce();
+            if (!useCacheConfig) warmSearchSpidersOnce();
             return;
         }
         tvNameAnimation();
@@ -393,7 +403,6 @@ public class HomeActivity extends BaseActivity {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-//                                if (!useCacheConfig) Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();
                                 initData();
                             }
                         }, 50);
@@ -401,12 +410,7 @@ public class HomeActivity extends BaseActivity {
 
                     @Override
                     public void notice(String msg) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        mHandler.post(() -> Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show());
                     }
 
                     @Override
@@ -416,24 +420,22 @@ public class HomeActivity extends BaseActivity {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(HomeActivity.this, msg+" jar load err", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, msg + " jar load err", Toast.LENGTH_SHORT).show();
                                 initData();
                             }
-                        },50);
+                        }, 50);
                     }
                 });
+            } else {
+                jarInitOk = true;
+                initData();
             }
             return;
         }
         ApiConfig.get().loadConfig(useCacheConfig, new ApiConfig.LoadConfigCallback() {
             @Override
             public void notice(String msg) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mHandler.post(() -> Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -452,65 +454,48 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void error(String msg) {
-                if (msg.equalsIgnoreCase("-1")) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            dataInitOk = true;
-                            jarInitOk = true;
-                            initData();
-                        }
+                if (msg != null && msg.equalsIgnoreCase("-1")) {
+                    mHandler.post(() -> {
+                        dataInitOk = true;
+                        jarInitOk = true;
+                        initData();
                     });
                     return;
                 }
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isActivityUnavailable()) {
-                            return;
-                        }
-                        if (mConfigErrorDialog == null)
-                            mConfigErrorDialog = new TipDialog(HomeActivity.this, msg, "重试", "取消", new TipDialog.OnListener() {
-                                @Override
-                                public void left() {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dismissConfigErrorDialog();
-                                            initData();
-                                        }
-                                    });
-                                }
+                mHandler.post(() -> {
+                    if (isActivityUnavailable()) return;
+                    if (mConfigErrorDialog == null) {
+                        mConfigErrorDialog = new TipDialog(HomeActivity.this, msg, "重试", "取消", new TipDialog.OnListener() {
+                            @Override
+                            public void left() {
+                                mHandler.post(() -> {
+                                    dismissConfigErrorDialog();
+                                    initData();
+                                });
+                            }
 
-                                @Override
-                                public void right() {
-                                    dataInitOk = true;
-                                    jarInitOk = true;
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dismissConfigErrorDialog();
-                                            initData();
-                                        }
-                                    });
-                                }
+                            @Override
+                            public void right() {
+                                dataInitOk = true;
+                                jarInitOk = true;
+                                mHandler.post(() -> {
+                                    dismissConfigErrorDialog();
+                                    initData();
+                                });
+                            }
 
-                                @Override
-                                public void cancel() {
-                                    dataInitOk = true;
-                                    jarInitOk = true;
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dismissConfigErrorDialog();
-                                            initData();
-                                        }
-                                    });
-                                }
-                            });
-                        if (!mConfigErrorDialog.isShowing())
-                            mConfigErrorDialog.show();
+                            @Override
+                            public void cancel() {
+                                dataInitOk = true;
+                                jarInitOk = true;
+                                mHandler.post(() -> {
+                                    dismissConfigErrorDialog();
+                                    initData();
+                                });
+                            }
+                        });
                     }
+                    if (!mConfigErrorDialog.isShowing()) mConfigErrorDialog.show();
                 });
             }
         }, this);
@@ -545,6 +530,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initViewPager(AbsSortXml absXml) {
         if (sortAdapter.getData().size() > 0) {
+            fragments.clear();
             for (MovieSort.SortData data : sortAdapter.getData()) {
                 if (data.id.equals("my0")) {
                     if (Hawk.get(HawkConfig.HOME_REC, HawkConfig.DEFAULT_HOME_REC) == 1 && absXml != null && absXml.videoList != null && absXml.videoList.size() > 0) {
@@ -563,7 +549,7 @@ public class HomeActivity extends BaseActivity {
                 FixedSpeedScroller scroller = new FixedSpeedScroller(mContext, new AccelerateInterpolator());
                 field.set(mViewPager, scroller);
                 scroller.setmDuration(300);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             mViewPager.setPageTransformer(true, new DefaultTransformer());
             mViewPager.setAdapter(pageAdapter);
@@ -582,9 +568,8 @@ public class HomeActivity extends BaseActivity {
             mViewPager.setAdapter(null);
             pageAdapter.removeAll();
             pageAdapter = null;
-        } else if (!fragments.isEmpty()) {
-            fragments.clear();
         }
+        fragments.clear();
     }
 
     private void updateSortData(List<MovieSort.SortData> newSortData) {
@@ -615,7 +600,6 @@ public class HomeActivity extends BaseActivity {
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBackPressed() {
-        // 打断加载
         if (homeSortLoading) {
             cancelHomeSortLoading();
             return;
@@ -624,38 +608,31 @@ public class HomeActivity extends BaseActivity {
             refreshEmpty();
             return;
         }
-        // 如果处于 VOD 删除模式，则退出该模式并刷新界面
         if (HawkConfig.hotVodDelete) {
             HawkConfig.hotVodDelete = false;
-            UserFragment.homeHotVodAdapter.notifyDataSetChanged();
+            if (UserFragment.homeHotVodAdapter != null) {
+                UserFragment.homeHotVodAdapter.notifyDataSetChanged();
+            }
             return;
         }
-
-        // 检查 fragments 状态
         if (this.fragments.size() <= 0 || this.sortFocused >= this.fragments.size() || this.sortFocused < 0) {
             doExit();
             return;
         }
-
         BaseLazyFragment baseLazyFragment = this.fragments.get(this.sortFocused);
         if (baseLazyFragment instanceof GridFragment) {
             GridFragment grid = (GridFragment) baseLazyFragment;
-            // 如果当前 Fragment 能恢复之前保存的 UI 状态，则直接返回
             if (grid.restoreView()) {
                 return;
             }
-            // 如果 sortFocusView 存在且没有获取焦点，则请求焦点
             if (this.sortFocusView != null && !this.sortFocusView.isFocused()) {
                 this.sortFocusView.requestFocus();
-            }
-            // 如果当前不是第一个界面，则将列表设置到第一项
-            else if (this.sortFocused != 0) {
+            } else if (this.sortFocused != 0) {
                 this.mGridView.setSelection(0);
             } else {
                 doExit();
             }
-        } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotList.canScrollVertically(-1)) {
-            // 如果 UserFragment 列表可以向上滚动，则滚动到顶部
+        } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotList != null && UserFragment.tvHotList.canScrollVertically(-1)) {
             UserFragment.tvHotList.scrollToPosition(0);
             this.mGridView.setSelection(0);
         } else {
@@ -664,7 +641,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void doExit() {
-        // 如果两次返回间隔小于 2000 毫秒，则退出应用
         if (System.currentTimeMillis() - mExitTime < 2000) {
             AppManager.getInstance().finishAllActivity();
             unregisterEventBus();
@@ -673,7 +649,6 @@ public class HomeActivity extends BaseActivity {
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
         } else {
-            // 否则仅提示用户，再按一次退出应用
             mExitTime = System.currentTimeMillis();
             Toast.makeText(mContext, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
         }
@@ -689,7 +664,6 @@ public class HomeActivity extends BaseActivity {
         mHandler.postDelayed(refreshTopLayoutRunnable, 450);
         mHandler.post(mRunnable);
     }
-
 
     @Override
     protected void onPause() {
@@ -728,8 +702,12 @@ public class HomeActivity extends BaseActivity {
 
     private void showFilterIcon(int count) {
         boolean visible = count > 0;
-        currentView.findViewById(R.id.tvFilterColor).setVisibility(visible ? View.VISIBLE : View.GONE);
-        currentView.findViewById(R.id.tvFilter).setVisibility(visible ? View.GONE : View.VISIBLE);
+        if (currentView != null) {
+            View f1 = currentView.findViewById(R.id.tvFilterColor);
+            View f2 = currentView.findViewById(R.id.tvFilter);
+            if (f1 != null) f1.setVisibility(visible ? View.VISIBLE : View.GONE);
+            if (f2 != null) f2.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
     }
 
     private final Runnable mDataRunnable = new Runnable() {
@@ -737,27 +715,29 @@ public class HomeActivity extends BaseActivity {
         public void run() {
             if (sortChange) {
                 sortChange = false;
-                BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
-                if (sortFocused != currentSelected) {
-                    currentSelected = sortFocused;
-                    mViewPager.setCurrentItem(sortFocused, false);
-                    changeTop(sortFocused != 0);
-                    if (baseLazyFragment instanceof GridFragment && ((GridFragment) baseLazyFragment).shouldReloadOnSelect()) {
+                if (fragments.size() > sortFocused) {
+                    BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
+                    if (sortFocused != currentSelected) {
+                        currentSelected = sortFocused;
+                        mViewPager.setCurrentItem(sortFocused, false);
+                        changeTop(sortFocused != 0);
+                        if (baseLazyFragment instanceof GridFragment && ((GridFragment) baseLazyFragment).shouldReloadOnSelect()) {
+                            ((GridFragment) baseLazyFragment).forceRefresh();
+                        }
+                    } else if (baseLazyFragment instanceof GridFragment && ((GridFragment) baseLazyFragment).shouldReloadOnSelect()) {
                         ((GridFragment) baseLazyFragment).forceRefresh();
                     }
-                } else if (baseLazyFragment instanceof GridFragment && ((GridFragment) baseLazyFragment).shouldReloadOnSelect()) {
-                    ((GridFragment) baseLazyFragment).forceRefresh();
                 }
             }
         }
     };
 
     private long menuKeyDownTime = 0;
-    private static final long LONG_PRESS_THRESHOLD = 2000; // 设置长按的阈值，单位是毫秒
+    private static final long LONG_PRESS_THRESHOLD = 2000;
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (topHide < 0)
-            return false;
+        if (topHide < 0) return false;
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -765,8 +745,8 @@ public class HomeActivity extends BaseActivity {
             } else if (event.getAction() == KeyEvent.ACTION_UP) {
                 long pressDuration = System.currentTimeMillis() - menuKeyDownTime;
                 if (pressDuration >= LONG_PRESS_THRESHOLD) {
-                    jumpActivity(SettingActivity.class);;
-                }else {
+                    jumpActivity(SettingActivity.class);
+                } else {
                     showSiteSwitch();
                 }
             }
@@ -777,13 +757,18 @@ public class HomeActivity extends BaseActivity {
     byte topHide = 0;
 
     private void changeTop(boolean hide) {
-        ViewObj viewObj = new ViewObj(topLayout, (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams());
+        if (topLayout == null) return;
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
+        if (lp == null) return;
+
+        int marginNormal = getResources().getDimensionPixelSize(R.dimen.vs_10);
+        int heightNormal = getResources().getDimensionPixelSize(R.dimen.vs_50);
+
+        ViewObj viewObj = new ViewObj(topLayout, lp);
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
+            public void onAnimationStart(Animator animation) {}
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -791,34 +776,25 @@ public class HomeActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
+            public void onAnimationCancel(Animator animation) {}
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
+            public void onAnimationRepeat(Animator animation) {}
         });
+
         if (hide && topHide == 0) {
-            animatorSet.playTogether(ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(),
-                            AutoSizeUtils.mm2px(this.mContext, 10.0f),
-                            AutoSizeUtils.mm2px(this.mContext, 0.0f)),
-                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(),
-                            AutoSizeUtils.mm2px(this.mContext, 50.0f),
-                            AutoSizeUtils.mm2px(this.mContext, 1.0f)),
+            animatorSet.playTogether(
+                    ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(), marginNormal, 0),
+                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(), heightNormal, 1),
                     ObjectAnimator.ofFloat(this.topLayout, "alpha", 1.0f, 0.0f));
             animatorSet.setDuration(200);
             animatorSet.start();
             return;
         }
         if (!hide && topHide == 1) {
-            animatorSet.playTogether(ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(),
-                            AutoSizeUtils.mm2px(this.mContext, 0.0f),
-                            AutoSizeUtils.mm2px(this.mContext, 10.0f)),
-                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(),
-                            AutoSizeUtils.mm2px(this.mContext, 1.0f),
-                            AutoSizeUtils.mm2px(this.mContext, 50.0f)),
+            animatorSet.playTogether(
+                    ObjectAnimator.ofObject(viewObj, "marginTop", new IntEvaluator(), 0, marginNormal),
+                    ObjectAnimator.ofObject(viewObj, "height", new IntEvaluator(), 1, heightNormal),
                     ObjectAnimator.ofFloat(this.topLayout, "alpha", 0.0f, 1.0f));
             animatorSet.setDuration(200);
             animatorSet.start();
@@ -854,14 +830,12 @@ public class HomeActivity extends BaseActivity {
         if (mSiteSwitchDialog == null) {
             mSiteSwitchDialog = new SelectDialog<>(HomeActivity.this);
             TvRecyclerView tvRecyclerView = mSiteSwitchDialog.findViewById(R.id.list);
-            // 根据 sites 数量动态计算列数
             int spanCount = (int) Math.floor(sites.size() / 20.0);
             spanCount = Math.min(spanCount, 2);
             tvRecyclerView.setLayoutManager(new V7GridLayoutManager(mSiteSwitchDialog.getContext(), spanCount + 1));
-            // 设置对话框宽度
             ConstraintLayout cl_root = mSiteSwitchDialog.findViewById(R.id.cl_root);
             ViewGroup.LayoutParams clp = cl_root.getLayoutParams();
-            clp.width = AutoSizeUtils.mm2px(mSiteSwitchDialog.getContext(), 380 + 200 * spanCount);
+            clp.width = getResources().getDimensionPixelSize(R.dimen.vs_360) + getResources().getDimensionPixelSize(R.dimen.vs_200) * spanCount;
             mSiteSwitchDialog.setTip("请选择首页数据源");
         }
         mSiteSwitchDialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<SourceBean>() {
@@ -872,6 +846,7 @@ public class HomeActivity extends BaseActivity {
                 ApiConfig.get().setSourceBean(value);
                 refreshHome(false);
             }
+
             @Override
             public String getDisplay(SourceBean val) {
                 return val.getName();
@@ -881,24 +856,23 @@ public class HomeActivity extends BaseActivity {
             public boolean areItemsTheSame(@NonNull SourceBean oldItem, @NonNull SourceBean newItem) {
                 return oldItem == newItem;
             }
+
             @Override
             public boolean areContentsTheSame(@NonNull SourceBean oldItem, @NonNull SourceBean newItem) {
                 return oldItem.getKey().equals(newItem.getKey());
             }
         }, sites, select);
-        if (!mSiteSwitchDialog.isShowing())
-            mSiteSwitchDialog.show();
+        if (!mSiteSwitchDialog.isShowing()) mSiteSwitchDialog.show();
     }
 
-    private void refreshHome()
-    {
+    private void refreshHome() {
         refreshHome(true);
     }
 
     private void refreshHomeSort() {
         refreshHomeRec = true;
         if (UserFragment.homeHotVodAdapter != null) {
-            UserFragment.homeHotVodAdapter.setNewData(new ArrayList<Movie.Video>());
+            UserFragment.homeHotVodAdapter.setNewData(new ArrayList<>());
         }
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
@@ -915,15 +889,9 @@ public class HomeActivity extends BaseActivity {
         UserFragment.homeHotVodAdapter.setNewData(absXml.videoList);
     }
 
-    private void refreshHome(final boolean restart)
-    {
+    private void refreshHome(final boolean restart) {
         if (Thread.currentThread() != android.os.Looper.getMainLooper().getThread()) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshHome(restart);
-                }
-            });
+            mHandler.post(() -> refreshHome(restart));
             return;
         }
         if (isActivityUnavailable()) {
@@ -969,13 +937,14 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    private void refreshEmpty()
-    {
-        skipNextUpdate=true;
+    private void refreshEmpty() {
+        skipNextUpdate = true;
         showSuccess();
         cancelHomeSortLoading();
         clearHomePages();
-        sortAdapter.setNewData(DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), new ArrayList<>(), true));
+        SourceBean home = ApiConfig.get().getHomeSourceBean();
+        String homeKey = home != null ? home.getKey() : "";
+        sortAdapter.setNewData(DefaultConfig.adjustSort(homeKey, new ArrayList<>(), true));
         initViewPager(null);
         tvName.clearAnimation();
     }
@@ -994,8 +963,7 @@ public class HomeActivity extends BaseActivity {
         previousHomeName = null;
     }
 
-    private void tvNameAnimation()
-    {
+    private void tvNameAnimation() {
         tvName.clearAnimation();
         AlphaAnimation blinkAnimation = new AlphaAnimation(0.0f, 1.0f);
         blinkAnimation.setDuration(500);
