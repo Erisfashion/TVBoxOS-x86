@@ -15,8 +15,8 @@
         android:paddingEnd="@dimen/vs_20"
         android:paddingBottom="@dimen/vs_10">
 
-        <!-- 历史记录 -->
-        <TextView
+        <!-- 历史记录 (LinearLayout 保证与 UserFragment.java:160 类型完全一致) -->
+        <LinearLayout
             android:id="@+id/tvHistory"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/vs_40"
@@ -25,15 +25,20 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/vs_15"
-            android:paddingEnd="@dimen/vs_15"
-            android:text="历史"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_16"
-            app:drawableStartCompat="@drawable/icon_history" />
+            android:paddingEnd="@dimen/vs_15">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="历史"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_16" />
+        </LinearLayout>
 
         <!-- 收藏 -->
-        <TextView
+        <LinearLayout
             android:id="@+id/tvFavorite"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/vs_40"
@@ -42,15 +47,20 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/vs_15"
-            android:paddingEnd="@dimen/vs_15"
-            android:text="收藏"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_16"
-            app:drawableStartCompat="@drawable/icon_collect" />
+            android:paddingEnd="@dimen/vs_15">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收藏"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_16" />
+        </LinearLayout>
 
         <!-- 推送 -->
-        <TextView
+        <LinearLayout
             android:id="@+id/tvPush"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/vs_40"
@@ -59,15 +69,20 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/vs_15"
-            android:paddingEnd="@dimen/vs_15"
-            android:text="推送"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_16"
-            app:drawableStartCompat="@drawable/icon_push" />
+            android:paddingEnd="@dimen/vs_15">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="推送"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_16" />
+        </LinearLayout>
 
         <!-- 设置 -->
-        <TextView
+        <LinearLayout
             android:id="@+id/tvSetting"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/vs_40"
@@ -76,15 +91,20 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/vs_15"
-            android:paddingEnd="@dimen/vs_15"
-            android:text="设置"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_16"
-            app:drawableStartCompat="@drawable/icon_setting" />
+            android:paddingEnd="@dimen/vs_15">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_16" />
+        </LinearLayout>
 
         <!-- 直播 -->
-        <TextView
+        <LinearLayout
             android:id="@+id/tvLive"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/vs_40"
@@ -93,16 +113,21 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/vs_15"
             android:paddingEnd="@dimen/vs_15"
-            android:text="直播"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/ts_16"
-            android:visibility="gone"
-            app:drawableStartCompat="@drawable/icon_live" />
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="直播"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_16" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- 热播 / 列表标题 -->
+    <!-- 推荐/热播列表标题 -->
     <TextView
         android:id="@+id/tvHotList"
         android:layout_width="wrap_content"
